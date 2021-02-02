@@ -1,7 +1,7 @@
-From 4450fe4cd6c48fcd3293c7ae0c2836640d383eaa Mon Sep 17 00:00:00 2001
+From 55ef726442489ed42eba1981fe038b95f910d511 Mon Sep 17 00:00:00 2001
 From: Zebediah Figura <z.figura12@gmail.com>
 Date: Sun, 22 Nov 2020 20:51:10 -0600
-Subject: [PATCH 13/13] ntdll: Reimplement SRW locks on top of Win32 futexes.
+Subject: [PATCH] ntdll: Reimplement SRW locks on top of Win32 futexes.
 
 Signed-off-by: Zebediah Figura <z.figura12@gmail.com>
 ---
@@ -9,12 +9,11 @@ Signed-off-by: Zebediah Figura <z.figura12@gmail.com>
  dlls/ntdll/unix/loader.c       |   6 -
  dlls/ntdll/unix/sync.c         | 309 --------------------------------
  dlls/ntdll/unix/unix_private.h |   6 -
- dlls/ntdll/unixlib.h           |   8 -
- include/winbase.h              |  24 +++
- 6 files changed, 166 insertions(+), 503 deletions(-)
+ dlls/ntdll/unixlib.h           |  10 +-
+ 5 files changed, 143 insertions(+), 504 deletions(-)
 
 diff --git a/dlls/ntdll/sync.c b/dlls/ntdll/sync.c
-index 133ae6d4ead..f792c8a2fb0 100644
+index 0e86ecead3d..34b076d6b71 100644
 --- a/dlls/ntdll/sync.c
 +++ b/dlls/ntdll/sync.c
 @@ -161,127 +161,23 @@ DWORD WINAPI RtlRunOnceExecuteOnce( RTL_RUN_ONCE *once, PRTL_RUN_ONCE_INIT_FN fu
@@ -171,9 +170,7 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +    union { RTL_SRWLOCK *rtl; struct srw_lock *s; LONG *l; } u = { lock };
 +
 +    InterlockedIncrement16( &u.s->exclusive_waiters );
- 
--    if (srwlock_lock_exclusive( (unsigned int *)&lock->Ptr, SRWLOCK_RES_EXCLUSIVE ))
--        NtWaitForKeyedEvent( 0, srwlock_key_exclusive(lock), FALSE, NULL );
++
 +    for (;;)
 +    {
 +        union { struct srw_lock s; LONG l; } old, new;
@@ -196,7 +193,9 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +                wait = TRUE;
 +            }
 +        } while (InterlockedCompareExchange( u.l, new.l, old.l ) != old.l);
-+
+ 
+-    if (srwlock_lock_exclusive( (unsigned int *)&lock->Ptr, SRWLOCK_RES_EXCLUSIVE ))
+-        NtWaitForKeyedEvent( 0, srwlock_key_exclusive(lock), FALSE, NULL );
 +        if (!wait) return;
 +        RtlWaitOnAddress( &u.s->owners, &new.s.owners, sizeof(short), NULL );
 +    }
@@ -208,11 +207,11 @@ index 133ae6d4ead..f792c8a2fb0 100644
  void WINAPI RtlAcquireSRWLockShared( RTL_SRWLOCK *lock )
  {
 -    unsigned int val, tmp;
-+    union { RTL_SRWLOCK *rtl; struct srw_lock *s; LONG *l; } u = { lock };
- 
+-
 -    if (unix_funcs->fast_RtlAcquireSRWLockShared( lock ) != STATUS_NOT_IMPLEMENTED)
 -        return;
--
++    union { RTL_SRWLOCK *rtl; struct srw_lock *s; LONG *l; } u = { lock };
+ 
 -    /* Acquires a shared lock. If it's currently not possible to add elements to
 -     * the shared queue, then request exclusive access instead. */
 -    for (val = *(unsigned int *)&lock->Ptr;; val = tmp)
@@ -240,7 +239,9 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +        {
 +            old.s = *u.s;
 +            new = old;
-+
+ 
+-    if (val & SRWLOCK_MASK_EXCLUSIVE_QUEUE)
+-        NtWaitForKeyedEvent( 0, srwlock_key_shared(lock), FALSE, NULL );
 +            if (old.s.owners != -1 && !old.s.exclusive_waiters)
 +            {
 +                /* Not locked exclusive, and no exclusive waiters.
@@ -253,9 +254,7 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +                wait = TRUE;
 +            }
 +        } while (InterlockedCompareExchange( u.l, new.l, old.l ) != old.l);
- 
--    if (val & SRWLOCK_MASK_EXCLUSIVE_QUEUE)
--        NtWaitForKeyedEvent( 0, srwlock_key_shared(lock), FALSE, NULL );
++
 +        if (!wait) return;
 +        RtlWaitOnAddress( u.s, &new.s, sizeof(struct srw_lock), NULL );
 +    }
@@ -275,11 +274,11 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +    {
 +        old.s = *u.s;
 +        new = old;
-+
-+        if (old.s.owners != -1) ERR("Lock %p is not owned exclusive!\n", lock);
  
 -    srwlock_leave_exclusive( lock, srwlock_unlock_exclusive( (unsigned int *)&lock->Ptr,
 -                             - SRWLOCK_RES_EXCLUSIVE ) - SRWLOCK_RES_EXCLUSIVE );
++        if (old.s.owners != -1) ERR("Lock %p is not owned exclusive!\n", lock);
++
 +        new.s.owners = 0;
 +    } while (InterlockedCompareExchange( u.l, new.l, old.l ) != old.l);
 +
@@ -303,12 +302,12 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +    {
 +        old.s = *u.s;
 +        new = old;
-+
-+        if (old.s.owners == -1) ERR("Lock %p is owned exclusive!\n", lock);
-+        else if (!old.s.owners) ERR("Lock %p is not owned shared!\n", lock);
  
 -    srwlock_leave_shared( lock, srwlock_lock_exclusive( (unsigned int *)&lock->Ptr,
 -                          - SRWLOCK_RES_SHARED ) - SRWLOCK_RES_SHARED );
++        if (old.s.owners == -1) ERR("Lock %p is owned exclusive!\n", lock);
++        else if (!old.s.owners) ERR("Lock %p is not owned shared!\n", lock);
++
 +        --new.s.owners;
 +    } while (InterlockedCompareExchange( u.l, new.l, old.l ) != old.l);
 +
@@ -332,9 +331,7 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +    {
 +        old.s = *u.s;
 +        new.s = old.s;
- 
--    return InterlockedCompareExchange( (int *)&lock->Ptr, SRWLOCK_MASK_IN_EXCLUSIVE |
--                                       SRWLOCK_RES_EXCLUSIVE, 0 ) == 0;
++
 +        if (!old.s.owners)
 +        {
 +            /* Not locked exclusive or shared. We can try to grab it. */
@@ -346,7 +343,9 @@ index 133ae6d4ead..f792c8a2fb0 100644
 +            ret = FALSE;
 +        }
 +    } while (InterlockedCompareExchange( u.l, new.l, old.l ) != old.l);
-+
+ 
+-    return InterlockedCompareExchange( (int *)&lock->Ptr, SRWLOCK_MASK_IN_EXCLUSIVE |
+-                                       SRWLOCK_RES_EXCLUSIVE, 0 ) == 0;
 +    return ret;
  }
  
@@ -394,11 +393,11 @@ index 133ae6d4ead..f792c8a2fb0 100644
  
  /***********************************************************************
 diff --git a/dlls/ntdll/unix/loader.c b/dlls/ntdll/unix/loader.c
-index 1633aeb97eb..8a30e6fc749 100644
+index ad242b91800..11b94972c3d 100644
 --- a/dlls/ntdll/unix/loader.c
 +++ b/dlls/ntdll/unix/loader.c
-@@ -1511,12 +1511,6 @@ static struct unix_funcs unix_funcs =
-     NtCurrentTeb,
+@@ -1513,12 +1513,6 @@ static struct unix_funcs unix_funcs =
+ #endif
      DbgUiIssueRemoteBreakin,
      RtlGetSystemTimePrecise,
 -    fast_RtlTryAcquireSRWLockExclusive,
@@ -411,7 +410,7 @@ index 1633aeb97eb..8a30e6fc749 100644
      ntdll_ceil,
      ntdll_cos,
 diff --git a/dlls/ntdll/unix/sync.c b/dlls/ntdll/unix/sync.c
-index 3645c9f9549..c32b62f9e0a 100644
+index 07e7939fc59..97781a3f0ae 100644
 --- a/dlls/ntdll/unix/sync.c
 +++ b/dlls/ntdll/unix/sync.c
 @@ -114,8 +114,6 @@ static inline ULONGLONG monotonic_counter(void)
@@ -457,7 +456,7 @@ index 3645c9f9549..c32b62f9e0a 100644
  #endif
  
  
-@@ -2232,290 +2210,3 @@ NTSTATUS WINAPI NtWaitForAlertByThreadId( const void *address, const LARGE_INTEG
+@@ -2233,290 +2211,3 @@ NTSTATUS WINAPI NtWaitForAlertByThreadId( const void *address, const LARGE_INTEG
      return NtWaitForSingleObject( ntdll_get_thread_data()->tid_alert_event, FALSE, timeout );
  #endif
  }
@@ -749,7 +748,7 @@ index 3645c9f9549..c32b62f9e0a 100644
 -
 -#endif
 diff --git a/dlls/ntdll/unix/unix_private.h b/dlls/ntdll/unix/unix_private.h
-index 4462c3ad218..fe6813551e2 100644
+index d82b8c90e84..1cf917ab89d 100644
 --- a/dlls/ntdll/unix/unix_private.h
 +++ b/dlls/ntdll/unix/unix_private.h
 @@ -93,12 +93,6 @@ extern void     (WINAPI *pKiUserApcDispatcher)(CONTEXT*,ULONG_PTR,ULONG_PTR,ULON
@@ -766,10 +765,19 @@ index 4462c3ad218..fe6813551e2 100644
  
  extern NTSTATUS CDECL get_initial_environment( WCHAR **wargv[], WCHAR *env, SIZE_T *size ) DECLSPEC_HIDDEN;
 diff --git a/dlls/ntdll/unixlib.h b/dlls/ntdll/unixlib.h
-index 6116f408572..5ffb09ce397 100644
+index 0d056ef2b80..4c2693b3f6c 100644
 --- a/dlls/ntdll/unixlib.h
 +++ b/dlls/ntdll/unixlib.h
-@@ -38,14 +38,6 @@ struct unix_funcs
+@@ -27,7 +27,7 @@
+ struct _DISPATCHER_CONTEXT;
+ 
+ /* increment this when you change the function table */
+-#define NTDLL_UNIXLIB_VERSION 110
++#define NTDLL_UNIXLIB_VERSION 111
+ 
+ struct unix_funcs
+ {
+@@ -40,14 +40,6 @@ struct unix_funcs
      NTSTATUS      (WINAPI *DbgUiIssueRemoteBreakin)( HANDLE process );
      LONGLONG      (WINAPI *RtlGetSystemTimePrecise)(void);
  
@@ -784,73 +792,6 @@ index 6116f408572..5ffb09ce397 100644
      /* math functions */
      double        (CDECL *atan)( double d );
      double        (CDECL *ceil)( double d );
-diff --git a/include/winbase.h b/include/winbase.h
-index dc8aa081be4..2ebcb3e735a 100644
---- a/include/winbase.h
-+++ b/include/winbase.h
-@@ -2928,14 +2928,18 @@ extern WCHAR * CDECL wine_get_dos_file_name( LPCSTR str );
- #pragma intrinsic(_InterlockedExchange)
- #pragma intrinsic(_InterlockedExchangeAdd)
- #pragma intrinsic(_InterlockedIncrement)
-+#pragma intrinsic(_InterlockedIncrement16)
- #pragma intrinsic(_InterlockedDecrement)
-+#pragma intrinsic(_InterlockedDecrement16)
- 
- long      _InterlockedCompareExchange(long volatile*,long,long);
- long long _InterlockedCompareExchange64(long long volatile*,long long,long long);
- long      _InterlockedDecrement(long volatile*);
-+short     _InterlockedDecrement16(short volatile*);
- long      _InterlockedExchange(long volatile*,long);
- long      _InterlockedExchangeAdd(long volatile*,long);
- long      _InterlockedIncrement(long volatile*);
-+short     _InterlockedIncrement16(short volatile *);
- 
- static FORCEINLINE LONG WINAPI InterlockedCompareExchange( LONG volatile *dest, LONG xchg, LONG compare )
- {
-@@ -2962,11 +2966,21 @@ static FORCEINLINE LONG WINAPI InterlockedIncrement( LONG volatile *dest )
-     return _InterlockedIncrement( (long volatile *)dest );
- }
- 
-+static FORCEINLINE short WINAPI InterlockedIncrement16( short volatile *dest )
-+{
-+    return _InterlockedIncrement16( (short volatile *)dest );
-+}
-+
- static FORCEINLINE LONG WINAPI InterlockedDecrement( LONG volatile *dest )
- {
-     return _InterlockedDecrement( (long volatile *)dest );
- }
- 
-+static FORCEINLINE short WINAPI InterlockedDecrement16( short volatile *dest )
-+{
-+    return _InterlockedDecrement16( (short volatile *)dest );
-+}
-+
- #ifndef __i386__
- 
- #pragma intrinsic(_InterlockedCompareExchangePointer)
-@@ -3031,11 +3045,21 @@ static FORCEINLINE LONG WINAPI InterlockedIncrement( LONG volatile *dest )
-     return __sync_add_and_fetch( dest, 1 );
- }
- 
-+static FORCEINLINE short WINAPI InterlockedIncrement16( short volatile *dest )
-+{
-+    return __sync_add_and_fetch( dest, 1 );
-+}
-+
- static FORCEINLINE LONG WINAPI InterlockedDecrement( LONG volatile *dest )
- {
-     return __sync_add_and_fetch( dest, -1 );
- }
- 
-+static FORCEINLINE short WINAPI InterlockedDecrement16( short volatile *dest )
-+{
-+    return __sync_add_and_fetch( dest, -1 );
-+}
-+
- static FORCEINLINE PVOID WINAPI InterlockedExchangePointer( PVOID volatile *dest, PVOID val )
- {
-     PVOID ret;
 -- 
 2.29.2
 

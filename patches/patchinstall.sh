@@ -51,13 +51,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "e377786a71c3b6eab5bc11c0b1c9c7c3dc309398"
+	echo "cfbbde2abce1eedc7f53db3f8af8078fe4a11cac"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 6.0-rc4"
+	echo "Wine Staging 6.1"
 	echo "Copyright (C) 2014-2019 the Wine Staging project authors."
 	echo "Copyright (C) 2018-2020 Alistair Leslie-Hughes"
 	echo ""
@@ -130,6 +130,7 @@ patch_enable_all ()
 	enable_gdi32_rotation="$1"
 	enable_gdiplus_Performance_Improvements="$1"
 	enable_imagehlp_BindImageEx="$1"
+	enable_imm32_com_initialization="$1"
 	enable_imm32_message_on_focus="$1"
 	enable_include_winsock="$1"
 	enable_inseng_Implementation="$1"
@@ -139,7 +140,6 @@ patch_enable_all ()
 	enable_kernel32_FindFirstFile="$1"
 	enable_kernel32_Job_Tests="$1"
 	enable_kernel32_Processor_Group="$1"
-	enable_kernel32_SetProcessDEPPolicy="$1"
 	enable_krnl386_exe16_GDT_LDT_Emulation="$1"
 	enable_krnl386_exe16_Invalid_Console_Handles="$1"
 	enable_libs_Unicode_Collation="$1"
@@ -167,10 +167,10 @@ patch_enable_all ()
 	enable_ntdll_HashLinks="$1"
 	enable_ntdll_Heap_Improvements="$1"
 	enable_ntdll_Hide_Wine_Exports="$1"
-	enable_ntdll_Interrupt_0x2e="$1"
 	enable_ntdll_Junction_Points="$1"
 	enable_ntdll_Manifest_Range="$1"
 	enable_ntdll_NtAccessCheck="$1"
+	enable_ntdll_NtAlertThreadByThreadId="$1"
 	enable_ntdll_NtDevicePath="$1"
 	enable_ntdll_NtQueryEaFile="$1"
 	enable_ntdll_NtQuerySection="$1"
@@ -217,7 +217,6 @@ patch_enable_all ()
 	enable_server_Object_Types="$1"
 	enable_server_PeekMessage="$1"
 	enable_server_Realtime_Priority="$1"
-	enable_server_Registry_Notifications="$1"
 	enable_server_Signal_Thread="$1"
 	enable_server_Stored_ACLs="$1"
 	enable_server_unix_name="$1"
@@ -325,6 +324,7 @@ patch_enable_all ()
 	enable_wtsapi32_EnumerateProcesses="$1"
 	enable_xactengine_initial="$1"
 	enable_xactengine2_dll="$1"
+	enable_xactengine3_7_Notification="$1"
 	enable_xactengine3_7_PrepareWave="$1"
 }
 
@@ -476,6 +476,9 @@ patch_enable ()
 		imagehlp-BindImageEx)
 			enable_imagehlp_BindImageEx="$2"
 			;;
+		imm32-com-initialization)
+			enable_imm32_com_initialization="$2"
+			;;
 		imm32-message_on_focus)
 			enable_imm32_message_on_focus="$2"
 			;;
@@ -502,9 +505,6 @@ patch_enable ()
 			;;
 		kernel32-Processor_Group)
 			enable_kernel32_Processor_Group="$2"
-			;;
-		kernel32-SetProcessDEPPolicy)
-			enable_kernel32_SetProcessDEPPolicy="$2"
 			;;
 		krnl386.exe16-GDT_LDT_Emulation)
 			enable_krnl386_exe16_GDT_LDT_Emulation="$2"
@@ -587,9 +587,6 @@ patch_enable ()
 		ntdll-Hide_Wine_Exports)
 			enable_ntdll_Hide_Wine_Exports="$2"
 			;;
-		ntdll-Interrupt-0x2e)
-			enable_ntdll_Interrupt_0x2e="$2"
-			;;
 		ntdll-Junction_Points)
 			enable_ntdll_Junction_Points="$2"
 			;;
@@ -598,6 +595,9 @@ patch_enable ()
 			;;
 		ntdll-NtAccessCheck)
 			enable_ntdll_NtAccessCheck="$2"
+			;;
+		ntdll-NtAlertThreadByThreadId)
+			enable_ntdll_NtAlertThreadByThreadId="$2"
 			;;
 		ntdll-NtDevicePath)
 			enable_ntdll_NtDevicePath="$2"
@@ -736,9 +736,6 @@ patch_enable ()
 			;;
 		server-Realtime_Priority)
 			enable_server_Realtime_Priority="$2"
-			;;
-		server-Registry_Notifications)
-			enable_server_Registry_Notifications="$2"
 			;;
 		server-Signal_Thread)
 			enable_server_Signal_Thread="$2"
@@ -1060,6 +1057,9 @@ patch_enable ()
 			;;
 		xactengine2-dll)
 			enable_xactengine2_dll="$2"
+			;;
+		xactengine3_7-Notification)
+			enable_xactengine3_7_Notification="$2"
 			;;
 		xactengine3_7-PrepareWave)
 			enable_xactengine3_7_PrepareWave="$2"
@@ -1585,6 +1585,13 @@ if test "$enable_ntdll_NtDevicePath" -eq 1; then
 	enable_ntdll_Pipe_SpecialCharacters=1
 fi
 
+if test "$enable_ntdll_NtAlertThreadByThreadId" -eq 1; then
+	if test "$enable_server_Object_Types" -gt 1; then
+		abort "Patchset server-Object_Types disabled, but ntdll-NtAlertThreadByThreadId depends on that."
+	fi
+	enable_server_Object_Types=1
+fi
+
 if test "$enable_ntdll_Builtin_Prot" -eq 1; then
 	if test "$enable_ntdll_WRITECOPY" -gt 1; then
 		abort "Patchset ntdll-WRITECOPY disabled, but ntdll-Builtin_Prot depends on that."
@@ -1611,6 +1618,13 @@ if test "$enable_kernel32_CopyFileEx" -eq 1; then
 		abort "Patchset ntdll-FileDispositionInformation disabled, but kernel32-CopyFileEx depends on that."
 	fi
 	enable_ntdll_FileDispositionInformation=1
+fi
+
+if test "$enable_imm32_com_initialization" -eq 1; then
+	if test "$enable_winex11__NET_ACTIVE_WINDOW" -gt 1; then
+		abort "Patchset winex11-_NET_ACTIVE_WINDOW disabled, but imm32-com-initialization depends on that."
+	fi
+	enable_winex11__NET_ACTIVE_WINDOW=1
 fi
 
 if test "$enable_eventfd_synchronization" -eq 1; then
@@ -2328,6 +2342,9 @@ fi
 # | This patchset has the following (direct or indirect) dependencies:
 # |   *	dsound-Fast_Mixer
 # |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#42886] Mushroom Wars - Has no sounds.
+# |
 # | Modified files:
 # |   *	dlls/dsound/Makefile.in, dlls/dsound/buffer.c, dlls/dsound/dsound.c, dlls/dsound/dsound_eax.h,
 # | 	dlls/dsound/dsound_main.c, dlls/dsound/dsound_private.h, dlls/dsound/eax.c, dlls/dsound/mixer.c
@@ -2354,6 +2371,8 @@ if test "$enable_dsound_EAX" -eq 1; then
 	patch_apply dsound-EAX/0019-dsound-Allow-disabling-of-EAX-support-in-the-registr.patch
 	patch_apply dsound-EAX/0020-dsound-Add-stub-support-for-DSPROPSETID_EAX20_Listen.patch
 	patch_apply dsound-EAX/0021-dsound-Add-stub-support-for-DSPROPSETID_EAX20_Buffer.patch
+	patch_apply dsound-EAX/0022-dsound-Enable-EAX-by-default.patch
+	patch_apply dsound-EAX/0023-dsound-Fake-success-for-EAX-Set-Buffer-ListenerPrope.patch
 fi
 
 # Patchset dwrite-FontFallback
@@ -2697,6 +2716,37 @@ if test "$enable_imagehlp_BindImageEx" -eq 1; then
 	patch_apply imagehlp-BindImageEx/0001-imagehlp-Implement-parts-of-BindImageEx-to-make-free.patch
 fi
 
+# Patchset winex11-_NET_ACTIVE_WINDOW
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#2155] Forward activate window requests to WM using _NET_ACTIVE_WINDOW
+# |
+# | Modified files:
+# |   *	dlls/user32/driver.c, dlls/user32/focus.c, dlls/user32/user_private.h, dlls/winex11.drv/event.c,
+# | 	dlls/winex11.drv/window.c, dlls/winex11.drv/winex11.drv.spec, dlls/winex11.drv/x11drv.h, dlls/winex11.drv/x11drv_main.c
+# |
+if test "$enable_winex11__NET_ACTIVE_WINDOW" -eq 1; then
+	patch_apply winex11-_NET_ACTIVE_WINDOW/0001-winex11.drv-Add-support-for-_NET_ACTIVE_WINDOW.patch
+	patch_apply winex11-_NET_ACTIVE_WINDOW/0002-user32-Before-asking-a-WM-to-activate-a-window-make-.patch
+fi
+
+# Patchset imm32-com-initialization
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	winex11-_NET_ACTIVE_WINDOW
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#42695] Path of Exile fails - CoCreateInstance() called in uninitialized apartment
+# |   *	[#47387] Victor Vran has no sound
+# |
+# | Modified files:
+# |   *	dlls/imm32/Makefile.in, dlls/imm32/imm.c, dlls/imm32/imm32.spec, dlls/imm32/tests/imm32.c, dlls/user32/focus.c,
+# | 	dlls/user32/misc.c, dlls/user32/user_private.h
+# |
+if test "$enable_imm32_com_initialization" -eq 1; then
+	patch_apply imm32-com-initialization/0001-imm32-Automatically-initialize-COM-on-window-activat.patch
+fi
+
 # Patchset imm32-message_on_focus
 # |
 # | This patchset fixes the following Wine bugs:
@@ -2815,20 +2865,6 @@ if test "$enable_kernel32_Processor_Group" -eq 1; then
 	patch_apply kernel32-Processor_Group/0002-kernel32-Add-stub-for-SetThreadIdealProcessorEx.patch
 fi
 
-# Patchset kernel32-SetProcessDEPPolicy
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#24125] kernel32: Implement SetProcessDEPPolicy.
-# |
-# | Modified files:
-# |   *	dlls/kernel32/process.c
-# |
-if test "$enable_kernel32_SetProcessDEPPolicy" -eq 1; then
-	patch_apply kernel32-SetProcessDEPPolicy/0001-kernel32-Implement-SetProcessDEPPolicy.patch
-	patch_apply kernel32-SetProcessDEPPolicy/0002-kernel32-Implement-GetSystemDEPPolicy.patch
-	patch_apply kernel32-SetProcessDEPPolicy/0003-kernel32-Make-system-DEP-policy-affect-GetProcessDEP.patch
-fi
-
 # Patchset krnl386.exe16-GDT_LDT_Emulation
 # |
 # | This patchset fixes the following Wine bugs:
@@ -2893,15 +2929,13 @@ fi
 # |
 # | Modified files:
 # |   *	dlls/mf/Makefile.in, dlls/mf/handler.c, dlls/mf/handler.h, dlls/mf/main.c, dlls/mf/session.c, dlls/mf/tests/mf.c,
-# | 	dlls/mfplat/tests/mfplat.c, dlls/mfplat/tests/test.mp4, dlls/mfreadwrite/reader.c, dlls/mfreadwrite/tests/mfplat.c,
-# | 	dlls/mfreadwrite/tests/resource.rc, dlls/mfreadwrite/tests/test.mp4, dlls/winegstreamer/Makefile.in,
-# | 	dlls/winegstreamer/audioconvert.c, dlls/winegstreamer/colorconvert.c, dlls/winegstreamer/gst_cbs.c,
-# | 	dlls/winegstreamer/gst_cbs.h, dlls/winegstreamer/gst_private.h, dlls/winegstreamer/media_source.c,
-# | 	dlls/winegstreamer/mf_decode.c, dlls/winegstreamer/mfplat.c, dlls/winegstreamer/winegstreamer_classes.idl,
-# | 	include/mfidl.idl, tools/make_makefiles, tools/makedep.c
+# | 	dlls/mfreadwrite/reader.c, dlls/winegstreamer/Makefile.in, dlls/winegstreamer/audioconvert.c,
+# | 	dlls/winegstreamer/colorconvert.c, dlls/winegstreamer/gst_cbs.c, dlls/winegstreamer/gst_cbs.h,
+# | 	dlls/winegstreamer/gst_private.h, dlls/winegstreamer/media_source.c, dlls/winegstreamer/mf_decode.c,
+# | 	dlls/winegstreamer/mfplat.c, dlls/winegstreamer/winegstreamer_classes.idl, include/mfidl.idl, tools/make_makefiles,
+# | 	tools/makedep.c
 # |
 if test "$enable_mfplat_streaming_support" -eq 1; then
-	patch_apply mfplat-streaming-support/0001-winegstreamer-Correct-mistaken-enum-value-in-Process.patch
 	patch_apply mfplat-streaming-support/0003-winegstreamer-Implement-Process-Input-Output-for-aud.patch
 	patch_apply mfplat-streaming-support/0004-winegstreamer-Implement-Get-Input-Output-StreamInfo-.patch
 	patch_apply mfplat-streaming-support/0005-winegstreamer-Implement-Get-Attributes-functions-for.patch
@@ -2944,8 +2978,6 @@ if test "$enable_mfplat_streaming_support" -eq 1; then
 	patch_apply mfplat-streaming-support/0043-Miscellaneous.patch
 	patch_apply mfplat-streaming-support/0044-WMV.patch
 	patch_apply mfplat-streaming-support/0045-Expose-PCM-output-type-on-AAC-decoder.patch
-	patch_apply mfplat-streaming-support/0046-Improve-tests.patch
-	patch_apply mfplat-streaming-support/0047-Revert-Improve-tests.patch
 	patch_apply mfplat-streaming-support/0048-Report-streams-backwards-and-only-select-one-of-each.patch
 	patch_apply mfplat-streaming-support/0049-winegstreamer-Introduce-MPEG-4-Section-2-video-decod.patch
 	patch_apply mfplat-streaming-support/0050-winegstreamer-Introduce-WMA-audio-decoder.patch
@@ -3216,18 +3248,6 @@ if test "$enable_ntdll_Hide_Wine_Exports" -eq 1; then
 	patch_apply ntdll-Hide_Wine_Exports/0001-ntdll-Add-support-for-hiding-wine-version-informatio.patch
 fi
 
-# Patchset ntdll-Interrupt-0x2e
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#42647] Implement stub handler for int 0x2e
-# |
-# | Modified files:
-# |   *	dlls/ntdll/unix/signal_i386.c
-# |
-if test "$enable_ntdll_Interrupt_0x2e" -eq 1; then
-	patch_apply ntdll-Interrupt-0x2e/0001-ntdll-Catch-windows-int-0x2e-syscall-on-i386.patch
-fi
-
 # Patchset ntdll-Manifest_Range
 # |
 # | This patchset fixes the following Wine bugs:
@@ -3247,6 +3267,58 @@ fi
 # |
 if test "$enable_ntdll_NtAccessCheck" -eq 1; then
 	patch_apply ntdll-NtAccessCheck/0001-ntdll-Improve-invalid-paramater-handling-in-NtAccess.patch
+fi
+
+# Patchset server-Object_Types
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#44629] Process Hacker can't enumerate handles
+# |   *	[#45374] Yet Another Process Monitor (.NET 2.0 app) reports System.AccessViolationException
+# |
+# | Modified files:
+# |   *	dlls/ntdll/tests/info.c, dlls/ntdll/tests/om.c, dlls/ntdll/unix/file.c, dlls/ntdll/unix/system.c, include/winternl.h,
+# | 	server/completion.c, server/directory.c, server/event.c, server/file.c, server/handle.c, server/mailslot.c,
+# | 	server/main.c, server/mapping.c, server/mutex.c, server/named_pipe.c, server/object.c, server/object.h,
+# | 	server/process.c, server/protocol.def, server/registry.c, server/semaphore.c, server/symlink.c, server/thread.c,
+# | 	server/timer.c, server/token.c, server/winstation.c
+# |
+if test "$enable_server_Object_Types" -eq 1; then
+	patch_apply server-Object_Types/0001-ntdll-Implement-SystemExtendedHandleInformation-in-N.patch
+	patch_apply server-Object_Types/0002-ntdll-Implement-ObjectTypesInformation-in-NtQueryObj.patch
+	patch_apply server-Object_Types/0003-server-Register-types-during-startup.patch
+	patch_apply server-Object_Types/0004-server-Rename-ObjectType-to-Type.patch
+	patch_apply server-Object_Types/0008-ntdll-Set-TypeIndex-for-ObjectTypeInformation-in-NtQ.patch
+	patch_apply server-Object_Types/0009-ntdll-Set-object-type-for-System-Extended-HandleInfo.patch
+	patch_apply server-Object_Types/0010-ntdll-Mimic-object-type-behavior-for-different-windo.patch
+fi
+
+# Patchset ntdll-NtAlertThreadByThreadId
+# |
+# | This patchset has the following (direct or indirect) dependencies:
+# |   *	server-Object_Types
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#50292] Process-local synchronization objects use private interfaces into the Unix library
+# |
+# | Modified files:
+# |   *	dlls/ntdll/Makefile.in, dlls/ntdll/critsection.c, dlls/ntdll/ntdll.spec, dlls/ntdll/ntdll_misc.h, dlls/ntdll/sync.c,
+# | 	dlls/ntdll/tests/Makefile.in, dlls/ntdll/tests/om.c, dlls/ntdll/tests/sync.c, dlls/ntdll/thread.c,
+# | 	dlls/ntdll/unix/loader.c, dlls/ntdll/unix/sync.c, dlls/ntdll/unix/thread.c, dlls/ntdll/unix/unix_private.h,
+# | 	dlls/ntdll/unix/virtual.c, dlls/ntdll/unixlib.h, include/winternl.h, server/thread.c
+# |
+if test "$enable_ntdll_NtAlertThreadByThreadId" -eq 1; then
+	patch_apply ntdll-NtAlertThreadByThreadId/0001-ntdll-tests-Move-some-tests-to-a-new-sync.c-file.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0002-ntdll-tests-Add-some-tests-for-Rtl-resources.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0003-ntdll-Use-a-separate-mutex-to-lock-the-TEB-list.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0004-ntdll-Implement-NtAlertThreadByThreadId-and-NtWaitFo.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0005-ntdll-tests-Add-basic-tests-for-thread-id-alert-func.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0006-ntdll-Implement-thread-id-alerts-on-top-of-futexes-i.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0007-ntdll-Implement-thread-id-alerts-on-top-of-Mach-sema.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0009-ntdll-Reimplement-Win32-futexes-on-top-of-thread-ID-.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0010-ntdll-Merge-critsection.c-into-sync.c.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0011-ntdll-Reimplement-the-critical-section-fast-path-on-.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0012-ntdll-Get-rid-of-the-direct-futex-path-for-condition.patch
+	patch_apply ntdll-NtAlertThreadByThreadId/0013-ntdll-Reimplement-SRW-locks-on-top-of-Win32-futexes.patch
 fi
 
 # Patchset ntdll-Pipe_SpecialCharacters
@@ -3741,39 +3813,6 @@ fi
 if test "$enable_server_Key_State" -eq 1; then
 	patch_apply server-Key_State/0001-server-Introduce-a-helper-function-to-update-the-thr.patch
 	patch_apply server-Key_State/0002-server-Implement-locking-and-synchronization-of-keys.patch
-fi
-
-# Patchset server-Object_Types
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44629] Process Hacker can't enumerate handles
-# |   *	[#45374] Yet Another Process Monitor (.NET 2.0 app) reports System.AccessViolationException
-# |
-# | Modified files:
-# |   *	dlls/ntdll/tests/info.c, dlls/ntdll/tests/om.c, dlls/ntdll/unix/file.c, dlls/ntdll/unix/system.c, include/winternl.h,
-# | 	server/completion.c, server/directory.c, server/event.c, server/file.c, server/handle.c, server/mailslot.c,
-# | 	server/main.c, server/mapping.c, server/mutex.c, server/named_pipe.c, server/object.c, server/object.h,
-# | 	server/process.c, server/protocol.def, server/registry.c, server/semaphore.c, server/symlink.c, server/thread.c,
-# | 	server/timer.c, server/token.c, server/winstation.c
-# |
-if test "$enable_server_Object_Types" -eq 1; then
-	patch_apply server-Object_Types/0001-ntdll-Implement-SystemExtendedHandleInformation-in-N.patch
-	patch_apply server-Object_Types/0002-ntdll-Implement-ObjectTypesInformation-in-NtQueryObj.patch
-	patch_apply server-Object_Types/0003-server-Register-types-during-startup.patch
-	patch_apply server-Object_Types/0004-server-Rename-ObjectType-to-Type.patch
-	patch_apply server-Object_Types/0008-ntdll-Set-TypeIndex-for-ObjectTypeInformation-in-NtQ.patch
-	patch_apply server-Object_Types/0009-ntdll-Set-object-type-for-System-Extended-HandleInfo.patch
-	patch_apply server-Object_Types/0010-ntdll-Mimic-object-type-behavior-for-different-windo.patch
-fi
-
-# Patchset server-Registry_Notifications
-# |
-# | Modified files:
-# |   *	dlls/ntdll/tests/reg.c, server/registry.c
-# |
-if test "$enable_server_Registry_Notifications" -eq 1; then
-	patch_apply server-Registry_Notifications/0001-server-Allow-multiple-registry-notifications-for-the.patch
-	patch_apply server-Registry_Notifications/0002-server-Introduce-refcounting-for-registry-notificati.patch
 fi
 
 # Patchset server-unix_name
@@ -4421,33 +4460,30 @@ fi
 # |   *	[#49998] widl - Support WinRT idls
 # |
 # | Modified files:
-# |   *	include/Makefile.in, include/windows.foundation.idl, include/windows.media.speechsynthesis.idl, tools/widl/expr.c,
-# | 	tools/widl/hash.c, tools/widl/hash.h, tools/widl/header.c, tools/widl/parser.l, tools/widl/parser.y,
-# | 	tools/widl/typegen.c, tools/widl/typelib.c, tools/widl/typetree.c, tools/widl/typetree.h, tools/widl/utils.c,
-# | 	tools/widl/utils.h, tools/widl/widltypes.h
+# |   *	include/windows.foundation.idl, include/windows.media.speechsynthesis.idl, tools/widl/expr.c, tools/widl/hash.c,
+# | 	tools/widl/hash.h, tools/widl/header.c, tools/widl/parser.l, tools/widl/parser.y, tools/widl/typegen.c,
+# | 	tools/widl/typelib.c, tools/widl/typetree.c, tools/widl/typetree.h, tools/widl/utils.c, tools/widl/utils.h,
+# | 	tools/widl/widltypes.h
 # |
 if test "$enable_widl_winrt_support" -eq 1; then
-	patch_apply widl-winrt-support/0001-include-Add-windows.media.speechsynthesis.idl-draft.patch
-	patch_apply widl-winrt-support/0002-widl-Support-WinRT-marshaling_behavior-attribute-par.patch
-	patch_apply widl-winrt-support/0003-widl-Support-WinRT-mta-threading-attribute-parsing.patch
-	patch_apply widl-winrt-support/0004-widl-Support-WinRT-exclusiveto-attribute-parsing.patch
-	patch_apply widl-winrt-support/0005-widl-Support-WinRT-runtimeclass-type.patch
-	patch_apply widl-winrt-support/0006-widl-Support-WinRT-eventadd-eventremove-attributes.patch
-	patch_apply widl-winrt-support/0007-widl-Support-WinRT-flags-attribute-parsing.patch
-	patch_apply widl-winrt-support/0008-widl-Support-using-qualified-names-for-interfaces.patch
-	patch_apply widl-winrt-support/0009-widl-Support-WinRT-static-attribute-parsing.patch
-	patch_apply widl-winrt-support/0010-widl-Support-WinRT-requires-keyword.patch
-	patch_apply widl-winrt-support/0011-widl-Support-WinRT-activatable-attribute.patch
-	patch_apply widl-winrt-support/0012-widl-Support-WinRT-parameterized-type-parsing.patch
-	patch_apply widl-winrt-support/0013-widl-Introduce-new-strappend-helper.patch
-	patch_apply widl-winrt-support/0014-widl-Support-partially-specialized-parameterized-typ.patch
-	patch_apply widl-winrt-support/0015-widl-Support-WinRT-parameterized-interface-type.patch
-	patch_apply widl-winrt-support/0016-widl-Support-WinRT-delegate-type.patch
-	patch_apply widl-winrt-support/0017-widl-Support-WinRT-parameterized-delegate-type.patch
-	patch_apply widl-winrt-support/0018-widl-Compute-signatures-for-parameterized-types.patch
-	patch_apply widl-winrt-support/0019-widl-Compute-uuids-for-parameterized-types.patch
-	patch_apply widl-winrt-support/0020-widl-Generate-helper-macros-for-WinRT-implementation.patch
-	patch_apply widl-winrt-support/0021-include-Add-IVectorView-HSTRING-declaration-to-windo.patch
+	patch_apply widl-winrt-support/0002-widl-Generate-WinRT-runtimeclass-name-constants.patch
+	patch_apply widl-winrt-support/0005-widl-Support-using-qualified-names-for-interfaces.patch
+	patch_apply widl-winrt-support/0006-widl-Support-WinRT-static-attribute-parsing.patch
+	patch_apply widl-winrt-support/0007-widl-Support-WinRT-requires-keyword.patch
+	patch_apply widl-winrt-support/0008-widl-Support-WinRT-activatable-attribute.patch
+	patch_apply widl-winrt-support/0009-widl-Support-WinRT-parameterized-type-parsing.patch
+	patch_apply widl-winrt-support/0010-widl-Introduce-new-strappend-helper.patch
+	patch_apply widl-winrt-support/0011-widl-Support-partially-specialized-parameterized-typ.patch
+	patch_apply widl-winrt-support/0012-widl-Support-WinRT-parameterized-interface-type.patch
+	patch_apply widl-winrt-support/0013-widl-Support-WinRT-delegate-type.patch
+	patch_apply widl-winrt-support/0014-widl-Support-WinRT-parameterized-delegate-type.patch
+	patch_apply widl-winrt-support/0015-widl-Compute-signatures-for-parameterized-types.patch
+	patch_apply widl-winrt-support/0016-widl-Compute-uuids-for-parameterized-types.patch
+	patch_apply widl-winrt-support/0017-widl-Generate-helper-macros-for-WinRT-implementation.patch
+	patch_apply widl-winrt-support/0018-include-Add-IVectorView-HSTRING-declaration-to-windo.patch
+	patch_apply widl-winrt-support/0019-widl-Never-use-the-namespace-ABI-prefix-for-global-t.patch
+	patch_apply widl-winrt-support/0020-widl-Precompute-qualified-type-names-and-use-them-fo.patch
+	patch_apply widl-winrt-support/0021-widl-Define-the-C-type-name-as-an-alias-for-the-C-qu.patch
 fi
 
 # Patchset windows.media.speech.dll
@@ -4915,20 +4951,6 @@ if test "$enable_winex11_Vulkan_support" -eq 1; then
 	patch_apply winex11-Vulkan_support/0001-winex11-Specify-a-default-vulkan-driver-if-one-not-f.patch
 fi
 
-# Patchset winex11-_NET_ACTIVE_WINDOW
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#2155] Forward activate window requests to WM using _NET_ACTIVE_WINDOW
-# |
-# | Modified files:
-# |   *	dlls/user32/driver.c, dlls/user32/focus.c, dlls/user32/user_private.h, dlls/winex11.drv/event.c,
-# | 	dlls/winex11.drv/window.c, dlls/winex11.drv/winex11.drv.spec, dlls/winex11.drv/x11drv.h, dlls/winex11.drv/x11drv_main.c
-# |
-if test "$enable_winex11__NET_ACTIVE_WINDOW" -eq 1; then
-	patch_apply winex11-_NET_ACTIVE_WINDOW/0001-winex11.drv-Add-support-for-_NET_ACTIVE_WINDOW.patch
-	patch_apply winex11-_NET_ACTIVE_WINDOW/0002-user32-Before-asking-a-WM-to-activate-a-window-make-.patch
-fi
-
 # Patchset winex11-WM_WINDOWPOSCHANGING
 # |
 # | This patchset has the following (direct or indirect) dependencies:
@@ -5206,6 +5228,19 @@ if test "$enable_xactengine2_dll" -eq 1; then
 	patch_apply xactengine2-dll/0020-xactengine2_2-New-Dll.patch
 	patch_apply xactengine2-dll/0021-xactengine2_1-New-Dll.patch
 	patch_apply xactengine2-dll/0022-xactengine2_0-New-Dll.patch
+fi
+
+# Patchset xactengine3_7-Notification
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#50546] xactengine3_7: Send Notification after the Wavebank is created.
+# |
+# | Modified files:
+# |   *	dlls/xactengine3_7/xact_dll.c
+# |
+if test "$enable_xactengine3_7_Notification" -eq 1; then
+	patch_apply xactengine3_7-Notification/0001-xactengine3.7-Delay-Notication-for-WAVEBANKPREPARED.patch
+	patch_apply xactengine3_7-Notification/0002-xactengine3_7-Record-context-for-each-notications.patch
 fi
 
 # Patchset xactengine3_7-PrepareWave
