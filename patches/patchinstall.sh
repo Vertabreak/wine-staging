@@ -51,13 +51,13 @@ usage()
 # Get the upstream commit sha
 upstream_commit()
 {
-	echo "cfbbde2abce1eedc7f53db3f8af8078fe4a11cac"
+	echo "31af1aeb7895bddf59a73886b89759f76881bc9e"
 }
 
 # Show version information
 version()
 {
-	echo "Wine Staging 6.1"
+	echo "Wine Staging 6.3"
 	echo "Copyright (C) 2014-2019 the Wine Staging project authors."
 	echo "Copyright (C) 2018-2020 Alistair Leslie-Hughes"
 	echo ""
@@ -98,7 +98,6 @@ patch_enable_all ()
 	enable_cryptext_CryptExtOpenCER="$1"
 	enable_d3d11_Deferred_Context="$1"
 	enable_d3drm_IDirect3D3_support="$1"
-	enable_d3dx9_32bpp_Alpha_Channel="$1"
 	enable_d3dx9_36_BumpLuminance="$1"
 	enable_d3dx9_36_CloneEffect="$1"
 	enable_d3dx9_36_D3DXDisassembleShader="$1"
@@ -129,7 +128,6 @@ patch_enable_all ()
 	enable_fonts_Missing_Fonts="$1"
 	enable_gdi32_rotation="$1"
 	enable_gdiplus_Performance_Improvements="$1"
-	enable_imagehlp_BindImageEx="$1"
 	enable_imm32_com_initialization="$1"
 	enable_imm32_message_on_focus="$1"
 	enable_include_winsock="$1"
@@ -137,14 +135,12 @@ patch_enable_all ()
 	enable_iphlpapi_System_Ping="$1"
 	enable_kernel32_CopyFileEx="$1"
 	enable_kernel32_Debugger="$1"
-	enable_kernel32_FindFirstFile="$1"
 	enable_kernel32_Job_Tests="$1"
 	enable_kernel32_Processor_Group="$1"
 	enable_krnl386_exe16_GDT_LDT_Emulation="$1"
 	enable_krnl386_exe16_Invalid_Console_Handles="$1"
 	enable_libs_Unicode_Collation="$1"
 	enable_loader_KeyboardLayouts="$1"
-	enable_mfplat_streaming_support="$1"
 	enable_mmsystem_dll16_MIDIHDR_Refcount="$1"
 	enable_mountmgr_DosDevices="$1"
 	enable_mscoree_CorValidateImage="$1"
@@ -169,34 +165,30 @@ patch_enable_all ()
 	enable_ntdll_Hide_Wine_Exports="$1"
 	enable_ntdll_Junction_Points="$1"
 	enable_ntdll_Manifest_Range="$1"
-	enable_ntdll_NtAccessCheck="$1"
 	enable_ntdll_NtAlertThreadByThreadId="$1"
 	enable_ntdll_NtDevicePath="$1"
 	enable_ntdll_NtQueryEaFile="$1"
 	enable_ntdll_NtQuerySection="$1"
-	enable_ntdll_NtQueryVirtualMemory="$1"
 	enable_ntdll_NtSetLdtEntries="$1"
 	enable_ntdll_Pipe_SpecialCharacters="$1"
 	enable_ntdll_ProcessQuotaLimits="$1"
+	enable_ntdll_RtlFirstFreeAce="$1"
 	enable_ntdll_RtlQueryPackageIdentity="$1"
 	enable_ntdll_RtlQueryProcessPlaceholderCompatibilityMode="$1"
 	enable_ntdll_RtlQueryRegistryValuesEx="$1"
 	enable_ntdll_Serial_Port_Detection="$1"
-	enable_ntdll_Status_Mapping="$1"
 	enable_ntdll_Syscall_Emulation="$1"
 	enable_ntdll_SystemCodeIntegrityInformation="$1"
 	enable_ntdll_WRITECOPY="$1"
 	enable_ntdll_Zero_mod_name="$1"
 	enable_ntdll_aarch_TEB="$1"
 	enable_ntdll_ext4_case_folder="$1"
-	enable_ntdll_set_full_cpu_context="$1"
 	enable_ntdll_x86_64_SegDs="$1"
 	enable_ntoskrnl_Stubs="$1"
 	enable_nvapi_Stub_DLL="$1"
 	enable_nvcuda_CUDA_Support="$1"
 	enable_nvcuvid_CUDA_Video_Support="$1"
 	enable_nvencodeapi_Video_Encoder="$1"
-	enable_odbccp32_SQLWriteDSNToIni="$1"
 	enable_oleaut32_CreateTypeLib="$1"
 	enable_oleaut32_Load_Save_EMF="$1"
 	enable_oleaut32_OLEPictureImpl_SaveAsFile="$1"
@@ -212,14 +204,12 @@ patch_enable_all ()
 	enable_riched20_IText_Interface="$1"
 	enable_server_FileEndOfFileInformation="$1"
 	enable_server_File_Permissions="$1"
-	enable_server_Inherited_ACLs="$1"
 	enable_server_Key_State="$1"
-	enable_server_Object_Types="$1"
 	enable_server_PeekMessage="$1"
 	enable_server_Realtime_Priority="$1"
 	enable_server_Signal_Thread="$1"
 	enable_server_Stored_ACLs="$1"
-	enable_server_unix_name="$1"
+	enable_server_default_integrity="$1"
 	enable_setupapi_DiskSpaceList="$1"
 	enable_setupapi_SPFILENOTIFY_FILEINCABINET="$1"
 	enable_shdocvw_ParseURLFromOutsideSource_Tests="$1"
@@ -261,15 +251,12 @@ patch_enable_all ()
 	enable_user32_rawinput_mouse="$1"
 	enable_user32_rawinput_mouse_experimental="$1"
 	enable_user32_recursive_activation="$1"
-	enable_user32_window_activation="$1"
 	enable_uxtheme_CloseThemeClass="$1"
 	enable_version_VerQueryValue="$1"
 	enable_widl_SLTG_Typelib_Support="$1"
-	enable_widl_winrt_support="$1"
 	enable_windows_gaming_input_dll="$1"
 	enable_windows_globalization_dll="$1"
 	enable_windows_media_speech_dll="$1"
-	enable_windows_networking_connectivity_dll="$1"
 	enable_windowscodecs_GIF_Encoder="$1"
 	enable_windowscodecs_TIFF_Support="$1"
 	enable_wine_inf_Directory_ContextMenuHandlers="$1"
@@ -316,7 +303,6 @@ patch_enable_all ()
 	enable_winmm_mciSendCommandA="$1"
 	enable_wintab32_improvements="$1"
 	enable_wintrust_WTHelperGetProvCertFromChain="$1"
-	enable_wow64cpu_Wow64Transition="$1"
 	enable_wpcap_Dynamic_Linking="$1"
 	enable_ws2_32_APC_Performance="$1"
 	enable_ws2_32_Connect_Time="$1"
@@ -379,9 +365,6 @@ patch_enable ()
 			;;
 		d3drm-IDirect3D3-support)
 			enable_d3drm_IDirect3D3_support="$2"
-			;;
-		d3dx9-32bpp_Alpha_Channel)
-			enable_d3dx9_32bpp_Alpha_Channel="$2"
 			;;
 		d3dx9_36-BumpLuminance)
 			enable_d3dx9_36_BumpLuminance="$2"
@@ -473,9 +456,6 @@ patch_enable ()
 		gdiplus-Performance-Improvements)
 			enable_gdiplus_Performance_Improvements="$2"
 			;;
-		imagehlp-BindImageEx)
-			enable_imagehlp_BindImageEx="$2"
-			;;
 		imm32-com-initialization)
 			enable_imm32_com_initialization="$2"
 			;;
@@ -497,9 +477,6 @@ patch_enable ()
 		kernel32-Debugger)
 			enable_kernel32_Debugger="$2"
 			;;
-		kernel32-FindFirstFile)
-			enable_kernel32_FindFirstFile="$2"
-			;;
 		kernel32-Job_Tests)
 			enable_kernel32_Job_Tests="$2"
 			;;
@@ -517,9 +494,6 @@ patch_enable ()
 			;;
 		loader-KeyboardLayouts)
 			enable_loader_KeyboardLayouts="$2"
-			;;
-		mfplat-streaming-support)
-			enable_mfplat_streaming_support="$2"
 			;;
 		mmsystem.dll16-MIDIHDR_Refcount)
 			enable_mmsystem_dll16_MIDIHDR_Refcount="$2"
@@ -593,9 +567,6 @@ patch_enable ()
 		ntdll-Manifest_Range)
 			enable_ntdll_Manifest_Range="$2"
 			;;
-		ntdll-NtAccessCheck)
-			enable_ntdll_NtAccessCheck="$2"
-			;;
 		ntdll-NtAlertThreadByThreadId)
 			enable_ntdll_NtAlertThreadByThreadId="$2"
 			;;
@@ -608,9 +579,6 @@ patch_enable ()
 		ntdll-NtQuerySection)
 			enable_ntdll_NtQuerySection="$2"
 			;;
-		ntdll-NtQueryVirtualMemory)
-			enable_ntdll_NtQueryVirtualMemory="$2"
-			;;
 		ntdll-NtSetLdtEntries)
 			enable_ntdll_NtSetLdtEntries="$2"
 			;;
@@ -619,6 +587,9 @@ patch_enable ()
 			;;
 		ntdll-ProcessQuotaLimits)
 			enable_ntdll_ProcessQuotaLimits="$2"
+			;;
+		ntdll-RtlFirstFreeAce)
+			enable_ntdll_RtlFirstFreeAce="$2"
 			;;
 		ntdll-RtlQueryPackageIdentity)
 			enable_ntdll_RtlQueryPackageIdentity="$2"
@@ -631,9 +602,6 @@ patch_enable ()
 			;;
 		ntdll-Serial_Port_Detection)
 			enable_ntdll_Serial_Port_Detection="$2"
-			;;
-		ntdll-Status_Mapping)
-			enable_ntdll_Status_Mapping="$2"
 			;;
 		ntdll-Syscall_Emulation)
 			enable_ntdll_Syscall_Emulation="$2"
@@ -653,9 +621,6 @@ patch_enable ()
 		ntdll-ext4-case-folder)
 			enable_ntdll_ext4_case_folder="$2"
 			;;
-		ntdll-set_full_cpu_context)
-			enable_ntdll_set_full_cpu_context="$2"
-			;;
 		ntdll-x86_64_SegDs)
 			enable_ntdll_x86_64_SegDs="$2"
 			;;
@@ -673,9 +638,6 @@ patch_enable ()
 			;;
 		nvencodeapi-Video_Encoder)
 			enable_nvencodeapi_Video_Encoder="$2"
-			;;
-		odbccp32-SQLWriteDSNToIni)
-			enable_odbccp32_SQLWriteDSNToIni="$2"
 			;;
 		oleaut32-CreateTypeLib)
 			enable_oleaut32_CreateTypeLib="$2"
@@ -722,14 +684,8 @@ patch_enable ()
 		server-File_Permissions)
 			enable_server_File_Permissions="$2"
 			;;
-		server-Inherited_ACLs)
-			enable_server_Inherited_ACLs="$2"
-			;;
 		server-Key_State)
 			enable_server_Key_State="$2"
-			;;
-		server-Object_Types)
-			enable_server_Object_Types="$2"
 			;;
 		server-PeekMessage)
 			enable_server_PeekMessage="$2"
@@ -743,8 +699,8 @@ patch_enable ()
 		server-Stored_ACLs)
 			enable_server_Stored_ACLs="$2"
 			;;
-		server-unix_name)
-			enable_server_unix_name="$2"
+		server-default_integrity)
+			enable_server_default_integrity="$2"
 			;;
 		setupapi-DiskSpaceList)
 			enable_setupapi_DiskSpaceList="$2"
@@ -869,9 +825,6 @@ patch_enable ()
 		user32-recursive-activation)
 			enable_user32_recursive_activation="$2"
 			;;
-		user32-window-activation)
-			enable_user32_window_activation="$2"
-			;;
 		uxtheme-CloseThemeClass)
 			enable_uxtheme_CloseThemeClass="$2"
 			;;
@@ -881,9 +834,6 @@ patch_enable ()
 		widl-SLTG_Typelib_Support)
 			enable_widl_SLTG_Typelib_Support="$2"
 			;;
-		widl-winrt-support)
-			enable_widl_winrt_support="$2"
-			;;
 		windows.gaming.input-dll)
 			enable_windows_gaming_input_dll="$2"
 			;;
@@ -892,9 +842,6 @@ patch_enable ()
 			;;
 		windows.media.speech.dll)
 			enable_windows_media_speech_dll="$2"
-			;;
-		windows.networking.connectivity.dll)
-			enable_windows_networking_connectivity_dll="$2"
 			;;
 		windowscodecs-GIF_Encoder)
 			enable_windowscodecs_GIF_Encoder="$2"
@@ -1033,9 +980,6 @@ patch_enable ()
 			;;
 		wintrust-WTHelperGetProvCertFromChain)
 			enable_wintrust_WTHelperGetProvCertFromChain="$2"
-			;;
-		wow64cpu-Wow64Transition)
-			enable_wow64cpu_Wow64Transition="$2"
 			;;
 		wpcap-Dynamic_Linking)
 			enable_wpcap_Dynamic_Linking="$2"
@@ -1436,13 +1380,6 @@ if test "$enable_wineboot_ProxySettings" -eq 1; then
 	enable_wineboot_drivers_etc_Stubs=1
 fi
 
-if test "$enable_windows_networking_connectivity_dll" -eq 1; then
-	if test "$enable_windows_globalization_dll" -gt 1; then
-		abort "Patchset windows.globalization-dll disabled, but windows.networking.connectivity.dll depends on that."
-	fi
-	enable_windows_globalization_dll=1
-fi
-
 if test "$enable_windows_globalization_dll" -eq 1; then
 	if test "$enable_windows_gaming_input_dll" -gt 1; then
 		abort "Patchset windows.gaming.input-dll disabled, but windows.globalization-dll depends on that."
@@ -1455,20 +1392,6 @@ if test "$enable_windows_gaming_input_dll" -eq 1; then
 		abort "Patchset windows.media.speech.dll disabled, but windows.gaming.input-dll depends on that."
 	fi
 	enable_windows_media_speech_dll=1
-fi
-
-if test "$enable_windows_media_speech_dll" -eq 1; then
-	if test "$enable_widl_winrt_support" -gt 1; then
-		abort "Patchset widl-winrt-support disabled, but windows.media.speech.dll depends on that."
-	fi
-	enable_widl_winrt_support=1
-fi
-
-if test "$enable_user32_window_activation" -eq 1; then
-	if test "$enable_user32_recursive_activation" -gt 1; then
-		abort "Patchset user32-recursive-activation disabled, but user32-window-activation depends on that."
-	fi
-	enable_user32_recursive_activation=1
 fi
 
 if test "$enable_user32_rawinput_mouse_experimental" -eq 1; then
@@ -1517,13 +1440,6 @@ if test "$enable_shell32_Progress_Dialog" -eq 1; then
 	enable_shell32_SHFileOperation_Move=1
 fi
 
-if test "$enable_server_Inherited_ACLs" -eq 1; then
-	if test "$enable_server_Stored_ACLs" -gt 1; then
-		abort "Patchset server-Stored_ACLs disabled, but server-Inherited_ACLs depends on that."
-	fi
-	enable_server_Stored_ACLs=1
-fi
-
 if test "$enable_server_Stored_ACLs" -eq 1; then
 	if test "$enable_ntdll_DOS_Attributes" -gt 1; then
 		abort "Patchset ntdll-DOS_Attributes disabled, but server-Stored_ACLs depends on that."
@@ -1563,33 +1479,11 @@ if test "$enable_nvcuvid_CUDA_Video_Support" -eq 1; then
 	enable_nvapi_Stub_DLL=1
 fi
 
-if test "$enable_ntdll_NtQueryVirtualMemory" -eq 1; then
-	if test "$enable_ntdll_ForceBottomUpAlloc" -gt 1; then
-		abort "Patchset ntdll-ForceBottomUpAlloc disabled, but ntdll-NtQueryVirtualMemory depends on that."
-	fi
-	if test "$enable_ntdll_Junction_Points" -gt 1; then
-		abort "Patchset ntdll-Junction_Points disabled, but ntdll-NtQueryVirtualMemory depends on that."
-	fi
-	if test "$enable_ntdll_NtDevicePath" -gt 1; then
-		abort "Patchset ntdll-NtDevicePath disabled, but ntdll-NtQueryVirtualMemory depends on that."
-	fi
-	enable_ntdll_ForceBottomUpAlloc=1
-	enable_ntdll_Junction_Points=1
-	enable_ntdll_NtDevicePath=1
-fi
-
 if test "$enable_ntdll_NtDevicePath" -eq 1; then
 	if test "$enable_ntdll_Pipe_SpecialCharacters" -gt 1; then
 		abort "Patchset ntdll-Pipe_SpecialCharacters disabled, but ntdll-NtDevicePath depends on that."
 	fi
 	enable_ntdll_Pipe_SpecialCharacters=1
-fi
-
-if test "$enable_ntdll_NtAlertThreadByThreadId" -eq 1; then
-	if test "$enable_server_Object_Types" -gt 1; then
-		abort "Patchset server-Object_Types disabled, but ntdll-NtAlertThreadByThreadId depends on that."
-	fi
-	enable_server_Object_Types=1
 fi
 
 if test "$enable_ntdll_Builtin_Prot" -eq 1; then
@@ -1754,7 +1648,7 @@ fi
 # Patchset Staging
 # |
 # | Modified files:
-# |   *	Makefile.in, dlls/ntdll/Makefile.in, dlls/ntdll/loader.c
+# |   *	Makefile.in, dlls/ntdll/loader.c
 # |
 if test "$enable_Staging" -eq 1; then
 	patch_apply Staging/0001-kernel32-Add-winediag-message-to-show-warning-that-t.patch
@@ -2032,18 +1926,6 @@ fi
 # |
 if test "$enable_d3drm_IDirect3D3_support" -eq 1; then
 	patch_apply d3drm-IDirect3D3-support/0001-d3drm-Support-IDirect3D3-when-creating-device.patch
-fi
-
-# Patchset d3dx9-32bpp_Alpha_Channel
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#48563] Runaway: A Twist of Fate renders its cursor incorrectly
-# |
-# | Modified files:
-# |   *	dlls/d3dx9_36/surface.c, dlls/d3dx9_36/tests/surface.c
-# |
-if test "$enable_d3dx9_32bpp_Alpha_Channel" -eq 1; then
-	patch_apply d3dx9-32bpp_Alpha_Channel/0001-d3dx9-Return-D3DFMT_A8R8G8B8-in-D3DXGetImageInfoFrom.patch
 fi
 
 # Patchset d3dx9_36-BumpLuminance
@@ -2428,21 +2310,18 @@ fi
 # |   *	[#50293] : native dxdiag complains about missing
 # |
 # | Modified files:
-# |   *	configure.ac, dlls/d3dpmesh/Makefile.in, dlls/d3dpmesh/d3dpmesh.spec, dlls/d3dpmesh/d3dpmesh_main.c,
-# | 	dlls/d3dpmesh/version.rc, dlls/diactfrm/Makefile.in, dlls/diactfrm/diactfrm.spec, dlls/diactfrm/diactfrm_main.c,
-# | 	dlls/diactfrm/version.rc, dlls/dimap/Makefile.in, dlls/dimap/dimap.spec, dlls/dimap/dimap_main.c, dlls/dimap/version.rc,
-# | 	dlls/dpmodemx/Makefile.in, dlls/dpmodemx/dpmodemx.spec, dlls/dpmodemx/dpmodemx_main.c, dlls/dpmodemx/version.rc,
-# | 	dlls/dpnhupnp/Makefile.in, dlls/dpnhupnp/dpnhupnp.spec, dlls/dpnhupnp/dpnhupnp_main.c, dlls/dpnhupnp/version.rc,
-# | 	dlls/dpvacm/Makefile.in, dlls/dpvacm/dpvacm.spec, dlls/dpvacm/dpvacm_main.c, dlls/dpvacm/version.rc,
-# | 	dlls/dpvvox/Makefile.in, dlls/dpvvox/dpvvox.spec, dlls/dpvvox/dpvvox_main.c, dlls/dpvvox/version.rc,
-# | 	dlls/dsdmoprp/Makefile.in, dlls/dsdmoprp/dsdmoprp.spec, dlls/dsdmoprp/dsdmoprp_main.c, dlls/dsdmoprp/version.rc,
-# | 	dlls/dsound3d/Makefile.in, dlls/dsound3d/dsound3d.spec, dlls/dsound3d/dsound3d_main.c, dlls/dsound3d/version.rc,
-# | 	dlls/dx7vb/Makefile.in, dlls/dx7vb/dx7vb.spec, dlls/dx7vb/dx7vb_main.c, dlls/dx7vb/version.rc,
-# | 	dlls/dxapi.sys/Makefile.in, dlls/dxapi.sys/dxapi.sys.spec, dlls/dxapi.sys/main.c, dlls/dxapi.sys/version.rc,
-# | 	dlls/encapi/Makefile.in, dlls/encapi/encapi.spec, dlls/encapi/encapi_main.c, dlls/encapi/version.rc,
-# | 	dlls/gcdef/Makefile.in, dlls/gcdef/gcdef.spec, dlls/gcdef/gcdef_main.c, dlls/gcdef/version.rc, dlls/qdv/Makefile.in,
-# | 	dlls/qdv/qdv.spec, dlls/qdv/qdv_main.c, dlls/qdv/version.rc, dlls/qedwipes/Makefile.in, dlls/qedwipes/qedwipes.spec,
-# | 	dlls/qedwipes/qedwipes_main.c, dlls/qedwipes/version.rc, loader/wine.inf.in
+# |   *	configure.ac, dlls/d3dpmesh/Makefile.in, dlls/d3dpmesh/d3dpmesh.spec, dlls/d3dpmesh/version.rc,
+# | 	dlls/diactfrm/Makefile.in, dlls/diactfrm/diactfrm.spec, dlls/diactfrm/version.rc, dlls/dimap/Makefile.in,
+# | 	dlls/dimap/dimap.spec, dlls/dimap/version.rc, dlls/dpmodemx/Makefile.in, dlls/dpmodemx/dpmodemx.spec,
+# | 	dlls/dpmodemx/dpmodemx_main.c, dlls/dpmodemx/version.rc, dlls/dpnhupnp/Makefile.in, dlls/dpnhupnp/dpnhupnp.spec,
+# | 	dlls/dpnhupnp/version.rc, dlls/dpvacm/Makefile.in, dlls/dpvacm/dpvacm.spec, dlls/dpvacm/version.rc,
+# | 	dlls/dpvvox/Makefile.in, dlls/dpvvox/dpvvox.spec, dlls/dpvvox/version.rc, dlls/dsdmoprp/Makefile.in,
+# | 	dlls/dsdmoprp/dsdmoprp.spec, dlls/dsdmoprp/version.rc, dlls/dsound3d/Makefile.in, dlls/dsound3d/dsound3d.spec,
+# | 	dlls/dsound3d/version.rc, dlls/dx7vb/Makefile.in, dlls/dx7vb/dx7vb.spec, dlls/dx7vb/version.rc,
+# | 	dlls/dxapi.sys/Makefile.in, dlls/dxapi.sys/dxapi.sys.spec, dlls/dxapi.sys/version.rc, dlls/encapi/Makefile.in,
+# | 	dlls/encapi/encapi.spec, dlls/encapi/version.rc, dlls/gcdef/Makefile.in, dlls/gcdef/gcdef.spec, dlls/gcdef/version.rc,
+# | 	dlls/qdv/Makefile.in, dlls/qdv/qdv.spec, dlls/qdv/version.rc, dlls/qedwipes/Makefile.in, dlls/qedwipes/qedwipes.spec,
+# | 	dlls/qedwipes/version.rc, loader/wine.inf.in
 # |
 if test "$enable_dxdiag_new_dlls" -eq 1; then
 	patch_apply dxdiag-new-dlls/0001-d3dpmesh-add-stub-dll.patch
@@ -2503,9 +2382,10 @@ fi
 # |   *	[#44948] Multiple apps (Spine (Mod starter for Gothic), MS Office 365 installer) need CreateSymbolicLinkW implementation
 # |
 # | Modified files:
-# |   *	configure.ac, dlls/kernel32/path.c, dlls/kernel32/tests/path.c, dlls/kernelbase/file.c, dlls/msvcp120/tests/msvcp120.c,
-# | 	dlls/msvcp140/tests/msvcp140.c, dlls/ntdll/tests/file.c, dlls/ntdll/unix/file.c, include/Makefile.in, include/ntifs.h,
-# | 	include/winternl.h, programs/cmd/builtins.c, programs/cmd/directory.c, server/fd.c, server/file.c, server/protocol.def
+# |   *	configure.ac, dlls/kernel32/path.c, dlls/kernel32/tests/path.c, dlls/kernelbase/file.c, dlls/mountmgr.sys/device.c,
+# | 	dlls/msvcp120/tests/msvcp120.c, dlls/msvcp140/tests/msvcp140.c, dlls/ntdll/tests/file.c, dlls/ntdll/unix/file.c,
+# | 	include/Makefile.in, include/ntifs.h, include/winternl.h, programs/cmd/builtins.c, programs/cmd/directory.c,
+# | 	server/fd.c, server/file.c, server/protocol.def
 # |
 if test "$enable_ntdll_Junction_Points" -eq 1; then
 	patch_apply ntdll-Junction_Points/0001-ntdll-Add-support-for-junction-point-creation.patch
@@ -2513,6 +2393,7 @@ if test "$enable_ntdll_Junction_Points" -eq 1; then
 	patch_apply ntdll-Junction_Points/0003-ntdll-Add-support-for-deleting-junction-points.patch
 	patch_apply ntdll-Junction_Points/0004-ntdll-Add-a-test-for-junction-point-advertisement.patch
 	patch_apply ntdll-Junction_Points/0005-server-Add-support-for-deleting-junction-points-with.patch
+	patch_apply ntdll-Junction_Points/0006-kernel32-Advertise-junction-point-support.patch
 	patch_apply ntdll-Junction_Points/0007-ntdll-Add-support-for-absolute-symlink-creation.patch
 	patch_apply ntdll-Junction_Points/0008-ntdll-Add-support-for-reading-absolute-symlinks.patch
 	patch_apply ntdll-Junction_Points/0009-ntdll-Add-support-for-deleting-symlinks.patch
@@ -2521,22 +2402,30 @@ if test "$enable_ntdll_Junction_Points" -eq 1; then
 	patch_apply ntdll-Junction_Points/0012-ntdll-Add-support-for-file-symlinks.patch
 	patch_apply ntdll-Junction_Points/0013-ntdll-Allow-creation-of-dangling-reparse-points-to-n.patch
 	patch_apply ntdll-Junction_Points/0014-ntdll-Correctly-report-file-symbolic-links-as-files.patch
-	patch_apply ntdll-Junction_Points/0015-kernel32-Set-error-code-when-attempting-to-delete-fi.patch
-	patch_apply ntdll-Junction_Points/0016-server-Properly-handle-file-symlink-deletion.patch
-	patch_apply ntdll-Junction_Points/0017-ntdll-Always-report-symbolic-links-as-containing-zer.patch
-	patch_apply ntdll-Junction_Points/0018-ntdll-Find-dangling-symlinks-quickly.patch
-	patch_apply ntdll-Junction_Points/0019-kernel32-Implement-CreateSymbolicLink-A-W-with-ntdll.patch
-	patch_apply ntdll-Junction_Points/0020-kernel32-Add-reparse-support-to-FindNextFile.patch
-	patch_apply ntdll-Junction_Points/0021-wcmd-Display-reparse-point-type-in-directory-listing.patch
-	patch_apply ntdll-Junction_Points/0022-wcmd-Show-reparse-point-target-in-directory-listing.patch
-	patch_apply ntdll-Junction_Points/0023-wcmd-Add-junction-point-support-to-mklink.patch
-	patch_apply ntdll-Junction_Points/0024-server-Fix-obtaining-information-about-a-symlink.patch
-	patch_apply ntdll-Junction_Points/0025-ntdll-Allow-set_file_times_precise-to-work-on-repars.patch
-	patch_apply ntdll-Junction_Points/0026-kernelbase-Convert-FILE_FLAG_OPEN_REPARSE_POINT-for-.patch
-	patch_apply ntdll-Junction_Points/0027-server-Implement-FILE_OPEN_REPARSE_POINT-option.patch
-	patch_apply ntdll-Junction_Points/0028-ntdll-Succeed-with-no-data-for-NtReadFile-on-reparse.patch
-	patch_apply ntdll-Junction_Points/0029-ntdll-Support-reparse-point-properties-in-fd_get_fil.patch
-	patch_apply ntdll-Junction_Points/0030-ntdll-Add-support-for-FileAttributeTagInformation.patch
+	patch_apply ntdll-Junction_Points/0015-kernelbase-Convert-FILE_FLAG_OPEN_REPARSE_POINT-for-.patch
+	patch_apply ntdll-Junction_Points/0016-server-Implement-FILE_OPEN_REPARSE_POINT-option.patch
+	patch_apply ntdll-Junction_Points/0017-ntdll-Allow-set_file_times_precise-to-work-on-repars.patch
+	patch_apply ntdll-Junction_Points/0018-server-Properly-handle-file-symlink-deletion.patch
+	patch_apply ntdll-Junction_Points/0019-server-Properly-handle-deleting-dangling-symlinks.patch
+	patch_apply ntdll-Junction_Points/0020-kernelbase-Use-FILE_OPEN_REPARSE_POINT-in-RemoveDire.patch
+	patch_apply ntdll-Junction_Points/0021-ntdll-Always-report-symbolic-links-as-containing-zer.patch
+	patch_apply ntdll-Junction_Points/0022-ntdll-Find-dangling-symlinks-quickly.patch
+	patch_apply ntdll-Junction_Points/0023-kernel32-Implement-CreateSymbolicLink-A-W-with-ntdll.patch
+	patch_apply ntdll-Junction_Points/0024-kernel32-Add-reparse-support-to-FindNextFile.patch
+	patch_apply ntdll-Junction_Points/0025-wcmd-Display-reparse-point-type-in-directory-listing.patch
+	patch_apply ntdll-Junction_Points/0026-wcmd-Show-reparse-point-target-in-directory-listing.patch
+	patch_apply ntdll-Junction_Points/0027-wcmd-Add-junction-point-support-to-mklink.patch
+	patch_apply ntdll-Junction_Points/0028-server-Fix-obtaining-information-about-a-symlink.patch
+	patch_apply ntdll-Junction_Points/0029-ntdll-Succeed-with-no-data-for-NtReadFile-on-reparse.patch
+	patch_apply ntdll-Junction_Points/0030-ntdll-Support-reparse-point-properties-in-fd_get_fil.patch
+	patch_apply ntdll-Junction_Points/0031-ntdll-Add-support-for-FileAttributeTagInformation.patch
+	patch_apply ntdll-Junction_Points/0032-server-Properly-handle-renames-involving-symlinks.patch
+	patch_apply ntdll-Junction_Points/0033-kernelbase-Use-FILE_OPEN_REPARSE_POINT-in-MoveFileWi.patch
+	patch_apply ntdll-Junction_Points/0034-kernelbase-Use-FILE_OPEN_REPARSE_POINT-in-DeleteFile.patch
+	patch_apply ntdll-Junction_Points/0035-ntdll-Treat-undecoded-unix-symlinks-as-NT-symlinks.patch
+	patch_apply ntdll-Junction_Points/0036-ntdll-Strip-the-wine-prefix-from-reparse-point-paths.patch
+	patch_apply ntdll-Junction_Points/0037-ntdll-Add-a-marker-to-reparse-point-paths-to-indicat.patch
+	patch_apply ntdll-Junction_Points/0038-server-Rewrite-absolute-reparse-point-targets-if-the.patch
 fi
 
 # Patchset server-PeekMessage
@@ -2704,18 +2593,6 @@ if test "$enable_gdiplus_Performance_Improvements" -eq 1; then
 	patch_apply gdiplus-Performance-Improvements/0004-gdiplus-Prefer-using-pre-multiplied-ARGB-data-in-the.patch
 fi
 
-# Patchset imagehlp-BindImageEx
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#3591] Support for BindImageEx
-# |
-# | Modified files:
-# |   *	dlls/imagehlp/modify.c, dlls/imagehlp/tests/image.c
-# |
-if test "$enable_imagehlp_BindImageEx" -eq 1; then
-	patch_apply imagehlp-BindImageEx/0001-imagehlp-Implement-parts-of-BindImageEx-to-make-free.patch
-fi
-
 # Patchset winex11-_NET_ACTIVE_WINDOW
 # |
 # | This patchset fixes the following Wine bugs:
@@ -2828,19 +2705,6 @@ if test "$enable_kernel32_Debugger" -eq 1; then
 	patch_apply kernel32-Debugger/0001-kernel32-Always-start-debugger-on-WinSta0.patch
 fi
 
-# Patchset kernel32-FindFirstFile
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#22635] Strip invalid characters from mask in FindFirstFileExW
-# |
-# | Modified files:
-# |   *	dlls/kernel32/tests/file.c, dlls/kernelbase/file.c
-# |
-if test "$enable_kernel32_FindFirstFile" -eq 1; then
-	patch_apply kernel32-FindFirstFile/0001-kernel32-Strip-invalid-characters-from-mask-in-FindF.patch
-	patch_apply kernel32-FindFirstFile/0002-kernel32-tests-Add-tests-for-FindFirstFileA-with-inv.patch
-fi
-
 # Patchset kernel32-Job_Tests
 # |
 # | Modified files:
@@ -2920,70 +2784,6 @@ fi
 if test "$enable_loader_KeyboardLayouts" -eq 1; then
 	patch_apply loader-KeyboardLayouts/0001-loader-Add-Keyboard-Layouts-registry-enteries.patch
 	patch_apply loader-KeyboardLayouts/0002-user32-Improve-GetKeyboardLayoutList.patch
-fi
-
-# Patchset mfplat-streaming-support
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#49692] Multiple applications need a Media Foundation media source implementation
-# |
-# | Modified files:
-# |   *	dlls/mf/Makefile.in, dlls/mf/handler.c, dlls/mf/handler.h, dlls/mf/main.c, dlls/mf/session.c, dlls/mf/tests/mf.c,
-# | 	dlls/mfreadwrite/reader.c, dlls/winegstreamer/Makefile.in, dlls/winegstreamer/audioconvert.c,
-# | 	dlls/winegstreamer/colorconvert.c, dlls/winegstreamer/gst_cbs.c, dlls/winegstreamer/gst_cbs.h,
-# | 	dlls/winegstreamer/gst_private.h, dlls/winegstreamer/media_source.c, dlls/winegstreamer/mf_decode.c,
-# | 	dlls/winegstreamer/mfplat.c, dlls/winegstreamer/winegstreamer_classes.idl, include/mfidl.idl, tools/make_makefiles,
-# | 	tools/makedep.c
-# |
-if test "$enable_mfplat_streaming_support" -eq 1; then
-	patch_apply mfplat-streaming-support/0003-winegstreamer-Implement-Process-Input-Output-for-aud.patch
-	patch_apply mfplat-streaming-support/0004-winegstreamer-Implement-Get-Input-Output-StreamInfo-.patch
-	patch_apply mfplat-streaming-support/0005-winegstreamer-Implement-Get-Attributes-functions-for.patch
-	patch_apply mfplat-streaming-support/0007-winegstreamer-Introduce-color-conversion-transform.patch
-	patch_apply mfplat-streaming-support/0008-winegstreamer-Register-the-color-conversion-transfor.patch
-	patch_apply mfplat-streaming-support/0009-winegstreamer-Implement-GetInputAvailableType-for-co.patch
-	patch_apply mfplat-streaming-support/0010-winegstreamer-Implement-SetInputType-for-color-conve.patch
-	patch_apply mfplat-streaming-support/0011-winegstreamer-Implement-GetOutputAvailableType-for-c.patch
-	patch_apply mfplat-streaming-support/0012-winegstreamer-Implement-SetOutputType-for-color-conv.patch
-	patch_apply mfplat-streaming-support/0013-winegstreamer-Implement-Process-Input-Output-for-col.patch
-	patch_apply mfplat-streaming-support/0014-winegstreamer-Implement-ProcessMessage-for-color-con.patch
-	patch_apply mfplat-streaming-support/0015-winegstreamer-Implement-Get-Input-Output-StreamInfo-.patch
-	patch_apply mfplat-streaming-support/0016-winegstreamer-Implement-Get-Attributes-functions-for.patch
-	patch_apply mfplat-streaming-support/0017-winegstreamer-Implement-Get-Input-Output-CurrentType.patch
-	patch_apply mfplat-streaming-support/0018-winegstreamer-Implement-IMFMediaSource-Stop.patch
-	patch_apply mfplat-streaming-support/0019-winegstreamer-Set-MF_MT_ALL_SAMPLES_INDEPENDENT-attr.patch
-	patch_apply mfplat-streaming-support/0020-mf-Add-invalid-connect-method-test.patch
-	patch_apply mfplat-streaming-support/0021-Allow-for-compressed-types.patch
-	patch_apply mfplat-streaming-support/0022-mf-session-Unconditionally-deliver-NULL-EOS-samples.patch
-	patch_apply mfplat-streaming-support/0023-mf-session-Request-more-samples-when-a-transform-nee.patch
-	patch_apply mfplat-streaming-support/0024-HACK-Flush-decoder-when-changing-times.patch
-	patch_apply mfplat-streaming-support/0025-winegstreamer-Add-IMFSeekInfo-GetNearestKeyFrames-st.patch
-	patch_apply mfplat-streaming-support/0026-winegstreamer-Fixup-raw-audio-caps-to-be-compatible-.patch
-	patch_apply mfplat-streaming-support/0027-winegstreamer-Set-MF_PD_MIME_TYPE-on-source-s-presen.patch
-	patch_apply mfplat-streaming-support/0028-winegstreamer-Insert-parser-into-pipeline-to-rectify.patch
-	patch_apply mfplat-streaming-support/0029-winegstreamer-Translate-H.264-caps-to-attributes.patch
-	patch_apply mfplat-streaming-support/0030-winegstreamer-Translate-WMV-caps-to-attributes.patch
-	patch_apply mfplat-streaming-support/0031-winegstreamer-Translate-AAC-caps-to-attributes.patch
-	patch_apply mfplat-streaming-support/0032-winegstreamer-Translate-MPEG-4-Section-2-caps-to-att.patch
-	patch_apply mfplat-streaming-support/0033-winegstreamer-Translate-WMA-caps-to-attributes.patch
-	patch_apply mfplat-streaming-support/0034-winegstreamer-Translate-H.264-attributes-to-caps.patch
-	patch_apply mfplat-streaming-support/0035-winegstreamer-Translate-WMV-attributes-to-caps.patch
-	patch_apply mfplat-streaming-support/0036-winegstreamer-Translate-AAC-attributes-to-caps.patch
-	patch_apply mfplat-streaming-support/0037-winegstreamer-Translate-MPEG-4-Section-2-attributes-.patch
-	patch_apply mfplat-streaming-support/0038-winegstreamer-Translate-WMA-attributes-to-caps.patch
-	patch_apply mfplat-streaming-support/0039-tools-Add-support-for-multiple-parent-directories.patch
-	patch_apply mfplat-streaming-support/0040-mf-Introduce-handler-helper.patch
-	patch_apply mfplat-streaming-support/0041-winegstreamer-Implement-decoder-MFT-on-gstreamer.patch
-	patch_apply mfplat-streaming-support/0042-mfreadwrite-Select-all-streams-when-creating-a-sourc.patch
-	patch_apply mfplat-streaming-support/0043-Miscellaneous.patch
-	patch_apply mfplat-streaming-support/0044-WMV.patch
-	patch_apply mfplat-streaming-support/0045-Expose-PCM-output-type-on-AAC-decoder.patch
-	patch_apply mfplat-streaming-support/0048-Report-streams-backwards-and-only-select-one-of-each.patch
-	patch_apply mfplat-streaming-support/0049-winegstreamer-Introduce-MPEG-4-Section-2-video-decod.patch
-	patch_apply mfplat-streaming-support/0050-winegstreamer-Introduce-WMA-audio-decoder.patch
-	patch_apply mfplat-streaming-support/0051-winegstreamer-Implement-MF_SD_LANGUAGE.patch
-	patch_apply mfplat-streaming-support/0052-winegstreamer-Force-audio-mpeg-to-decode-in-source.patch
-	patch_apply mfplat-streaming-support/0060-winegstreamer-Support-eAVEncH264VProfile_Constrained.patch
 fi
 
 # Patchset mmsystem.dll16-MIDIHDR_Refcount
@@ -3141,10 +2941,9 @@ fi
 # | 	Empires II, MSYS2)
 # |
 # | Modified files:
-# |   *	dlls/advapi32/tests/security.c, dlls/kernel32/tests/virtual.c, dlls/ntdll/unix/loader.c, dlls/ntdll/unix/server.c,
-# | 	dlls/ntdll/unix/signal_arm.c, dlls/ntdll/unix/signal_arm64.c, dlls/ntdll/unix/signal_i386.c,
-# | 	dlls/ntdll/unix/signal_x86_64.c, dlls/ntdll/unix/unix_private.h, dlls/ntdll/unix/virtual.c,
-# | 	dlls/psapi/tests/psapi_main.c
+# |   *	dlls/kernel32/tests/virtual.c, dlls/ntdll/unix/loader.c, dlls/ntdll/unix/server.c, dlls/ntdll/unix/signal_arm.c,
+# | 	dlls/ntdll/unix/signal_arm64.c, dlls/ntdll/unix/signal_i386.c, dlls/ntdll/unix/signal_x86_64.c,
+# | 	dlls/ntdll/unix/unix_private.h, dlls/ntdll/unix/virtual.c, dlls/psapi/tests/psapi_main.c
 # |
 if test "$enable_ntdll_WRITECOPY" -eq 1; then
 	patch_apply ntdll-WRITECOPY/0001-ntdll-Trigger-write-watches-before-passing-userdata-.patch
@@ -3260,42 +3059,7 @@ if test "$enable_ntdll_Manifest_Range" -eq 1; then
 	patch_apply ntdll-Manifest_Range/0001-ntdll-Support-ISOLATIONAWARE_MANIFEST_RESOURCE_ID-ra.patch
 fi
 
-# Patchset ntdll-NtAccessCheck
-# |
-# | Modified files:
-# |   *	dlls/advapi32/tests/security.c, dlls/ntdll/unix/security.c
-# |
-if test "$enable_ntdll_NtAccessCheck" -eq 1; then
-	patch_apply ntdll-NtAccessCheck/0001-ntdll-Improve-invalid-paramater-handling-in-NtAccess.patch
-fi
-
-# Patchset server-Object_Types
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#44629] Process Hacker can't enumerate handles
-# |   *	[#45374] Yet Another Process Monitor (.NET 2.0 app) reports System.AccessViolationException
-# |
-# | Modified files:
-# |   *	dlls/ntdll/tests/info.c, dlls/ntdll/tests/om.c, dlls/ntdll/unix/file.c, dlls/ntdll/unix/system.c, include/winternl.h,
-# | 	server/completion.c, server/directory.c, server/event.c, server/file.c, server/handle.c, server/mailslot.c,
-# | 	server/main.c, server/mapping.c, server/mutex.c, server/named_pipe.c, server/object.c, server/object.h,
-# | 	server/process.c, server/protocol.def, server/registry.c, server/semaphore.c, server/symlink.c, server/thread.c,
-# | 	server/timer.c, server/token.c, server/winstation.c
-# |
-if test "$enable_server_Object_Types" -eq 1; then
-	patch_apply server-Object_Types/0001-ntdll-Implement-SystemExtendedHandleInformation-in-N.patch
-	patch_apply server-Object_Types/0002-ntdll-Implement-ObjectTypesInformation-in-NtQueryObj.patch
-	patch_apply server-Object_Types/0003-server-Register-types-during-startup.patch
-	patch_apply server-Object_Types/0004-server-Rename-ObjectType-to-Type.patch
-	patch_apply server-Object_Types/0008-ntdll-Set-TypeIndex-for-ObjectTypeInformation-in-NtQ.patch
-	patch_apply server-Object_Types/0009-ntdll-Set-object-type-for-System-Extended-HandleInfo.patch
-	patch_apply server-Object_Types/0010-ntdll-Mimic-object-type-behavior-for-different-windo.patch
-fi
-
 # Patchset ntdll-NtAlertThreadByThreadId
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	server-Object_Types
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#50292] Process-local synchronization objects use private interfaces into the Unix library
@@ -3304,7 +3068,7 @@ fi
 # |   *	dlls/ntdll/Makefile.in, dlls/ntdll/critsection.c, dlls/ntdll/ntdll.spec, dlls/ntdll/ntdll_misc.h, dlls/ntdll/sync.c,
 # | 	dlls/ntdll/tests/Makefile.in, dlls/ntdll/tests/om.c, dlls/ntdll/tests/sync.c, dlls/ntdll/thread.c,
 # | 	dlls/ntdll/unix/loader.c, dlls/ntdll/unix/sync.c, dlls/ntdll/unix/thread.c, dlls/ntdll/unix/unix_private.h,
-# | 	dlls/ntdll/unix/virtual.c, dlls/ntdll/unixlib.h, include/winternl.h, server/thread.c
+# | 	dlls/ntdll/unix/virtual.c, dlls/ntdll/unixlib.h, include/winternl.h
 # |
 if test "$enable_ntdll_NtAlertThreadByThreadId" -eq 1; then
 	patch_apply ntdll-NtAlertThreadByThreadId/0001-ntdll-tests-Move-some-tests-to-a-new-sync.c-file.patch
@@ -3357,32 +3121,6 @@ if test "$enable_ntdll_NtQuerySection" -eq 1; then
 	patch_apply ntdll-NtQuerySection/0002-kernel32-tests-Add-tests-for-NtQuerySection.patch
 fi
 
-# Patchset ntdll-NtQueryVirtualMemory
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-ForceBottomUpAlloc, ntdll-DOS_Attributes, ntdll-NtQueryEaFile, ntdll-Junction_Points, ntdll-
-# | 	Pipe_SpecialCharacters, ntdll-NtDevicePath
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#23999] Implement MemorySectionName class in NtQueryVirtualMemory
-# |   *	[#27248] Implement K32GetMappedFileName
-# |
-# | Modified files:
-# |   *	dlls/kernelbase/debug.c, dlls/ntdll/tests/info.c, dlls/ntdll/unix/file.c, dlls/ntdll/unix/process.c,
-# | 	dlls/ntdll/unix/unix_private.h, dlls/ntdll/unix/virtual.c, dlls/psapi/tests/psapi_main.c, server/mapping.c,
-# | 	server/protocol.def
-# |
-if test "$enable_ntdll_NtQueryVirtualMemory" -eq 1; then
-	patch_apply ntdll-NtQueryVirtualMemory/0003-ntdll-Implement-NtQueryVirtualMemory-MemorySectionNa.patch
-	patch_apply ntdll-NtQueryVirtualMemory/0004-ntdll-tests-Add-tests-for-NtQueryVirtualMemory-Memor.patch
-	patch_apply ntdll-NtQueryVirtualMemory/0005-ntdll-tests-Add-test-to-ensure-section-name-is-full-.patch
-	patch_apply ntdll-NtQueryVirtualMemory/0006-ntdll-Allow-to-query-section-names-from-other-proces.patch
-	patch_apply ntdll-NtQueryVirtualMemory/0007-kernel32-Implement-K32GetMappedFileName.-v2.patch
-	patch_apply ntdll-NtQueryVirtualMemory/0008-ntdll-Resolve-drive-symlinks-before-returning-sectio.patch
-	patch_apply ntdll-NtQueryVirtualMemory/0009-ntdll-Fixup-builtin-dll-names-in-get_section_name.patch
-	patch_apply ntdll-NtQueryVirtualMemory/0010-server-Fix-process-access-rights-in-get_mapping_file.patch
-fi
-
 # Patchset ntdll-NtSetLdtEntries
 # |
 # | Modified files:
@@ -3404,6 +3142,19 @@ fi
 # |
 if test "$enable_ntdll_ProcessQuotaLimits" -eq 1; then
 	patch_apply ntdll-ProcessQuotaLimits/0001-ntdll-Add-fake-data-implementation-for-ProcessQuotaL.patch
+fi
+
+# Patchset ntdll-RtlFirstFreeAce
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#50624] Waves Central 12.0.5 fails to start.
+# |
+# | Modified files:
+# |   *	dlls/ntdll/sec.c
+# |
+if test "$enable_ntdll_RtlFirstFreeAce" -eq 1; then
+	patch_apply ntdll-RtlFirstFreeAce/0001-ntdll-Check-return-parameter-before-use.patch
+	patch_apply ntdll-RtlFirstFreeAce/0002-ntdll-RtlFirstFreeAce-only-return-FALSE-on-error.patch
 fi
 
 # Patchset ntdll-RtlQueryPackageIdentity
@@ -3449,15 +3200,6 @@ fi
 # |
 if test "$enable_ntdll_Serial_Port_Detection" -eq 1; then
 	patch_apply ntdll-Serial_Port_Detection/0001-ntdll-Do-a-device-check-before-returning-a-default-s.patch
-fi
-
-# Patchset ntdll-Status_Mapping
-# |
-# | Modified files:
-# |   *	dlls/ntdll/tests/file.c, dlls/ntdll/unix/file.c
-# |
-if test "$enable_ntdll_Status_Mapping" -eq 1; then
-	patch_apply ntdll-Status_Mapping/0001-ntdll-Return-STATUS_INVALID_DEVICE_REQUEST-when-tryi.patch
 fi
 
 # Patchset ntdll-Syscall_Emulation
@@ -3518,15 +3260,6 @@ if test "$enable_ntdll_ext4_case_folder" -eq 1; then
 	patch_apply ntdll-ext4-case-folder/0002-ntdll-server-Mark-drive_c-as-case-insensitive-when-c.patch
 fi
 
-# Patchset ntdll-set_full_cpu_context
-# |
-# | Modified files:
-# |   *	dlls/ntdll/unix/signal_i386.c
-# |
-if test "$enable_ntdll_set_full_cpu_context" -eq 1; then
-	patch_apply ntdll-set_full_cpu_context/0001-ntdll-Add-back-SS-segment-prefixes-in-set_full_cpu_c.patch
-fi
-
 # Patchset ntdll-x86_64_SegDs
 # |
 # | This patchset fixes the following Wine bugs:
@@ -3565,18 +3298,6 @@ if test "$enable_nvencodeapi_Video_Encoder" -eq 1; then
 	patch_apply nvencodeapi-Video_Encoder/0001-nvencodeapi-First-implementation.patch
 	patch_apply nvencodeapi-Video_Encoder/0002-nvencodeapi-Add-debian-specific-paths-to-native-libr.patch
 	patch_apply nvencodeapi-Video_Encoder/0003-nvencodeapi-Add-support-for-version-6.0.patch
-fi
-
-# Patchset odbccp32-SQLWriteDSNToIni
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#50150] : odbccp32: Implement SQLWriteDSNToIni/W
-# |
-# | Modified files:
-# |   *	dlls/odbccp32/odbccp32.c, dlls/odbccp32/tests/misc.c
-# |
-if test "$enable_odbccp32_SQLWriteDSNToIni" -eq 1; then
-	patch_apply odbccp32-SQLWriteDSNToIni/0001-odbccp32-Implement-SQLWriteDSNToIni-W.patch
 fi
 
 # Patchset oleaut32-CreateTypeLib
@@ -3666,7 +3387,7 @@ fi
 # |   *	[#43472] Prefer native version of packager.dll
 # |
 # | Modified files:
-# |   *	dlls/packager/packager_main.c
+# |   *	dlls/packager/Makefile.in
 # |
 if test "$enable_packager_DllMain" -eq 1; then
 	patch_apply packager-DllMain/0001-packager-Prefer-native-version.patch
@@ -3768,6 +3489,20 @@ if test "$enable_server_File_Permissions" -eq 1; then
 	patch_apply server-File_Permissions/0008-server-Improve-mapping-of-DACL-to-file-permissions.patch
 fi
 
+# Patchset server-Key_State
+# |
+# | This patchset fixes the following Wine bugs:
+# |   *	[#31899] Implement locking and synchronization of key states
+# |   *	[#35907] Fix caps lock state issues with multiple processes
+# |
+# | Modified files:
+# |   *	server/queue.c
+# |
+if test "$enable_server_Key_State" -eq 1; then
+	patch_apply server-Key_State/0001-server-Introduce-a-helper-function-to-update-the-thr.patch
+	patch_apply server-Key_State/0002-server-Implement-locking-and-synchronization-of-keys.patch
+fi
+
 # Patchset server-Stored_ACLs
 # |
 # | This patchset has the following (direct or indirect) dependencies:
@@ -3789,42 +3524,21 @@ if test "$enable_server_Stored_ACLs" -eq 1; then
 	patch_apply server-Stored_ACLs/0007-server-Retrieve-file-security-attributes-with-extend.patch
 fi
 
-# Patchset server-Inherited_ACLs
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	ntdll-DOS_Attributes, ntdll-NtQueryEaFile, ntdll-Junction_Points, server-File_Permissions, server-Stored_ACLs
-# |
-# | Modified files:
-# |   *	dlls/advapi32/tests/security.c, server/file.c
-# |
-if test "$enable_server_Inherited_ACLs" -eq 1; then
-	patch_apply server-Inherited_ACLs/0001-server-Inherit-security-attributes-from-parent-direc.patch
-fi
-
-# Patchset server-Key_State
+# Patchset server-default_integrity
 # |
 # | This patchset fixes the following Wine bugs:
-# |   *	[#31899] Implement locking and synchronization of key states
-# |   *	[#35907] Fix caps lock state issues with multiple processes
+# |   *	[#40613] Multiple applications require UAC implementation to run installer/app as a normal user instead of administrator
+# | 	(WhatsApp Desktop, Smartflix, Squirrel Installers, OneDrive)
+# |   *	[#39262] DiscordSetup.exe (.NET 4.5.2 app): Squirrell installer requires being run as unelevated process ('explorer.exe'
+# | 	should run unelevated by default with Vista+ setting)
 # |
 # | Modified files:
-# |   *	server/queue.c
+# |   *	dlls/shell32/shlexec.c, loader/wine.inf.in, server/process.c
 # |
-if test "$enable_server_Key_State" -eq 1; then
-	patch_apply server-Key_State/0001-server-Introduce-a-helper-function-to-update-the-thr.patch
-	patch_apply server-Key_State/0002-server-Implement-locking-and-synchronization-of-keys.patch
-fi
-
-# Patchset server-unix_name
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#46070] Basemark Web 3.0 Desktop Launcher crashes
-# |
-# | Modified files:
-# |   *	server/fd.c, server/file.c, server/file.h
-# |
-if test "$enable_server_unix_name" -eq 1; then
-	patch_apply server-unix_name/0001-server-Try-to-retrieve-the-unix-name-on-handles-crea.patch
+if test "$enable_server_default_integrity" -eq 1; then
+	patch_apply server-default_integrity/0001-server-Create-processes-using-a-limited-administrato.patch
+	patch_apply server-default_integrity/0002-shell32-Implement-the-runas-verb.patch
+	patch_apply server-default_integrity/0003-wine.inf-Set-the-EnableLUA-value-to-1.patch
 fi
 
 # Patchset setupapi-DiskSpaceList
@@ -3902,11 +3616,9 @@ fi
 # |   *	ntdll-FileDispositionInformation, kernel32-CopyFileEx, shell32-SHFileOperation_Move, shell32-Progress_Dialog
 # |
 # | Modified files:
-# |   *	dlls/aclui/Makefile.in, dlls/aclui/aclui.rc, dlls/aclui/aclui_main.c, dlls/aclui/resource.h, dlls/aclui/user_icons.bmp,
-# | 	dlls/shell32/Makefile.in, dlls/shell32/shell32.rc, dlls/shell32/shlview_cmenu.c, dlls/shell32/shresdef.h
+# |   *	dlls/shell32/Makefile.in, dlls/shell32/shell32.rc, dlls/shell32/shlview_cmenu.c, dlls/shell32/shresdef.h
 # |
 if test "$enable_shell32_ACE_Viewer" -eq 1; then
-	patch_apply shell32-ACE_Viewer/0001-aclui-Add-basic-ACE-viewer.patch
 	patch_apply shell32-ACE_Viewer/0002-shell32-Add-security-property-tab.patch
 fi
 
@@ -4418,21 +4130,6 @@ if test "$enable_user32_recursive_activation" -eq 1; then
 	patch_apply user32-recursive-activation/0002-user32-tests-Test-a-recursive-activation-loop-on-WM_.patch
 fi
 
-# Patchset user32-window-activation
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	user32-recursive-activation
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#47507] Send a WM_ACTIVATE message after restoring a minimized window.
-# |
-# | Modified files:
-# |   *	dlls/user32/tests/msg.c, dlls/user32/winpos.c
-# |
-if test "$enable_user32_window_activation" -eq 1; then
-	patch_apply user32-window-activation/0001-user32-Send-a-WM_ACTIVATE-message-after-restoring-a-.patch
-fi
-
 # Patchset uxtheme-CloseThemeClass
 # |
 # | This patchset fixes the following Wine bugs:
@@ -4454,42 +4151,7 @@ if test "$enable_version_VerQueryValue" -eq 1; then
 	patch_apply version-VerQueryValue/0001-version-Test-for-VerQueryValueA-try-2.patch
 fi
 
-# Patchset widl-winrt-support
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#49998] widl - Support WinRT idls
-# |
-# | Modified files:
-# |   *	include/windows.foundation.idl, include/windows.media.speechsynthesis.idl, tools/widl/expr.c, tools/widl/hash.c,
-# | 	tools/widl/hash.h, tools/widl/header.c, tools/widl/parser.l, tools/widl/parser.y, tools/widl/typegen.c,
-# | 	tools/widl/typelib.c, tools/widl/typetree.c, tools/widl/typetree.h, tools/widl/utils.c, tools/widl/utils.h,
-# | 	tools/widl/widltypes.h
-# |
-if test "$enable_widl_winrt_support" -eq 1; then
-	patch_apply widl-winrt-support/0002-widl-Generate-WinRT-runtimeclass-name-constants.patch
-	patch_apply widl-winrt-support/0005-widl-Support-using-qualified-names-for-interfaces.patch
-	patch_apply widl-winrt-support/0006-widl-Support-WinRT-static-attribute-parsing.patch
-	patch_apply widl-winrt-support/0007-widl-Support-WinRT-requires-keyword.patch
-	patch_apply widl-winrt-support/0008-widl-Support-WinRT-activatable-attribute.patch
-	patch_apply widl-winrt-support/0009-widl-Support-WinRT-parameterized-type-parsing.patch
-	patch_apply widl-winrt-support/0010-widl-Introduce-new-strappend-helper.patch
-	patch_apply widl-winrt-support/0011-widl-Support-partially-specialized-parameterized-typ.patch
-	patch_apply widl-winrt-support/0012-widl-Support-WinRT-parameterized-interface-type.patch
-	patch_apply widl-winrt-support/0013-widl-Support-WinRT-delegate-type.patch
-	patch_apply widl-winrt-support/0014-widl-Support-WinRT-parameterized-delegate-type.patch
-	patch_apply widl-winrt-support/0015-widl-Compute-signatures-for-parameterized-types.patch
-	patch_apply widl-winrt-support/0016-widl-Compute-uuids-for-parameterized-types.patch
-	patch_apply widl-winrt-support/0017-widl-Generate-helper-macros-for-WinRT-implementation.patch
-	patch_apply widl-winrt-support/0018-include-Add-IVectorView-HSTRING-declaration-to-windo.patch
-	patch_apply widl-winrt-support/0019-widl-Never-use-the-namespace-ABI-prefix-for-global-t.patch
-	patch_apply widl-winrt-support/0020-widl-Precompute-qualified-type-names-and-use-them-fo.patch
-	patch_apply widl-winrt-support/0021-widl-Define-the-C-type-name-as-an-alias-for-the-C-qu.patch
-fi
-
 # Patchset windows.media.speech.dll
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	widl-winrt-support
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#49740] windows.media.speech: New DLL
@@ -4508,7 +4170,7 @@ fi
 # Patchset windows.gaming.input-dll
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	widl-winrt-support, windows.media.speech.dll
+# |   *	windows.media.speech.dll
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#49756] windows.gaming.input: New DLL
@@ -4516,8 +4178,9 @@ fi
 # | Modified files:
 # |   *	configure.ac, dlls/windows.gaming.input.dll/Makefile.in, dlls/windows.gaming.input.dll/windows.gaming.input.spec,
 # | 	dlls/windows.gaming.input.dll/windows.gaming.input_main.c, include/Makefile.in, include/asyncinfo.idl,
-# | 	include/windows.foundation.idl, include/windows.gaming.input.forcefeedback.idl, include/windows.gaming.input.idl,
-# | 	include/windows.system.idl, loader/wine.inf.in
+# | 	include/windows.foundation.collections.idl, include/windows.foundation.idl,
+# | 	include/windows.gaming.input.forcefeedback.idl, include/windows.gaming.input.idl, include/windows.system.idl,
+# | 	loader/wine.inf.in
 # |
 if test "$enable_windows_gaming_input_dll" -eq 1; then
 	patch_apply windows.gaming.input-dll/0001-windows.gaming.input-Add-stub-dll.patch
@@ -4534,7 +4197,7 @@ fi
 # Patchset windows.globalization-dll
 # |
 # | This patchset has the following (direct or indirect) dependencies:
-# |   *	widl-winrt-support, windows.media.speech.dll, windows.gaming.input-dll
+# |   *	windows.media.speech.dll, windows.gaming.input-dll
 # |
 # | This patchset fixes the following Wine bugs:
 # |   *	[#49740] windows.globalization: New DLL
@@ -4542,8 +4205,8 @@ fi
 # |
 # | Modified files:
 # |   *	configure.ac, dlls/windows.globalization.dll/Makefile.in, dlls/windows.globalization.dll/windows.globalization.spec,
-# | 	dlls/windows.globalization.dll/windows.globalization_main.c, include/Makefile.in, include/windows.globalization.idl,
-# | 	include/windows.system.userprofile.idl, loader/wine.inf.in
+# | 	dlls/windows.globalization.dll/windows.globalization_main.c, include/Makefile.in, include/windows.foundation.idl,
+# | 	include/windows.globalization.idl, include/windows.system.userprofile.idl, loader/wine.inf.in
 # |
 if test "$enable_windows_globalization_dll" -eq 1; then
 	patch_apply windows.globalization-dll/0001-windows.globalization-Add-stub-dll.patch
@@ -4551,25 +4214,6 @@ if test "$enable_windows_globalization_dll" -eq 1; then
 	patch_apply windows.globalization-dll/0003-windows.globalization-Implement-IGlobalizationPrefer.patch
 	patch_apply windows.globalization-dll/0004-windows.globalization-Implement-IGlobalizationPrefer.patch
 	patch_apply windows.globalization-dll/0005-windows.globalization-Fake-empty-IGlobalizationPrefe.patch
-fi
-
-# Patchset windows.networking.connectivity.dll
-# |
-# | This patchset has the following (direct or indirect) dependencies:
-# |   *	widl-winrt-support, windows.media.speech.dll, windows.gaming.input-dll, windows.globalization-dll
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#46534] windows.networking.connectivity: New DLL
-# |
-# | Modified files:
-# |   *	configure.ac, dlls/windows.networking.connectivity.dll/Makefile.in,
-# | 	dlls/windows.networking.connectivity.dll/windows.networking.connectivity.spec,
-# | 	dlls/windows.networking.connectivity.dll/windows.networking.connectivity_main.c, loader/wine.inf.in
-# |
-if test "$enable_windows_networking_connectivity_dll" -eq 1; then
-	patch_apply windows.networking.connectivity.dll/0001-windows.networking.connectivity-Add-stub-dll.patch
-	patch_apply windows.networking.connectivity.dll/0002-windows.networking.connectivity-Implement-IActivatio.patch
-	patch_apply windows.networking.connectivity.dll/0003-windows.networking.connectivity-Implement-INetworkIn.patch
 fi
 
 # Patchset windowscodecs-GIF_Encoder
@@ -5103,20 +4747,6 @@ if test "$enable_wintrust_WTHelperGetProvCertFromChain" -eq 1; then
 	patch_apply wintrust-WTHelperGetProvCertFromChain/0001-wintrust-Add-parameter-check-in-WTHelperGetProvCertF.patch
 fi
 
-# Patchset wow64cpu-Wow64Transition
-# |
-# | This patchset fixes the following Wine bugs:
-# |   *	[#45567] League of Legends 8.12+ fails to start a game (anticheat engine, validation of WoW64 syscall dispatcher)
-# |
-# | Modified files:
-# |   *	configure, configure.ac, dlls/ntdll/loader.c, dlls/ntdll/ntdll.spec, dlls/wow64cpu/Makefile.in,
-# | 	dlls/wow64cpu/wow64cpu.spec, dlls/wow64cpu/wow64cpu_main.c
-# |
-if test "$enable_wow64cpu_Wow64Transition" -eq 1; then
-	patch_apply wow64cpu-Wow64Transition/0001-wow64cpu-Add-stub-dll.patch
-	patch_apply wow64cpu-Wow64Transition/0002-ntdll-Add-a-stub-implementation-of-Wow64Transition.patch
-fi
-
 # Patchset wpcap-Dynamic_Linking
 # |
 # | Modified files:
@@ -5252,7 +4882,6 @@ fi
 # |   *	dlls/xactengine3_7/xact_dll.c
 # |
 if test "$enable_xactengine3_7_PrepareWave" -eq 1; then
-	patch_apply xactengine3_7-PrepareWave/0001-xactengine3_7-Implement-IXACT3Engine-PrepareWave.patch
 	patch_apply xactengine3_7-PrepareWave/0002-xactengine3_7-Implement-IXACT3Engine-PrepareStreamin.patch
 	patch_apply xactengine3_7-PrepareWave/0003-xactengine3_7-Implement-IXACT3Engine-PrepareInMemory.patch
 fi

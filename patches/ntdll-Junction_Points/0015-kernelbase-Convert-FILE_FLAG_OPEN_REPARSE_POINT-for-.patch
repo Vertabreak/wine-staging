@@ -1,0 +1,26 @@
+From 6d623ff7c29b1913b89681993a2dd63627312928 Mon Sep 17 00:00:00 2001
+From: "Erich E. Hoover" <erich.e.hoover@wine-staging.com>
+Date: Sun, 22 Nov 2020 22:35:50 -0700
+Subject: [PATCH] kernelbase: Convert FILE_FLAG_OPEN_REPARSE_POINT for passing
+ to ntdll.
+
+---
+ dlls/kernelbase/file.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dlls/kernelbase/file.c b/dlls/kernelbase/file.c
+index abfdade04ed..ad3c002d8c6 100644
+--- a/dlls/kernelbase/file.c
++++ b/dlls/kernelbase/file.c
+@@ -723,6 +723,8 @@ static UINT get_nt_file_options( DWORD attributes )
+         options |= FILE_RANDOM_ACCESS;
+     if (attributes & FILE_FLAG_WRITE_THROUGH)
+         options |= FILE_WRITE_THROUGH;
++    if (attributes & FILE_FLAG_OPEN_REPARSE_POINT)
++        options |= FILE_OPEN_REPARSE_POINT;
+     return options;
+ }
+ 
+-- 
+2.20.1
+

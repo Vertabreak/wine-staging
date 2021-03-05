@@ -1,13 +1,13 @@
-From f1f8f1d85868f75ac182252335de1cd84cb4ba16 Mon Sep 17 00:00:00 2001
+From b7328b5a416b09c66f37ba53cb010afe0266a12e Mon Sep 17 00:00:00 2001
 From: Zebediah Figura <z.figura12@gmail.com>
 Date: Thu, 9 Jan 2020 13:44:01 -0600
 Subject: [PATCH] ntdll/tests: Move some tests to a new sync.c file.
 
 ---
  dlls/ntdll/tests/Makefile.in |   1 +
- dlls/ntdll/tests/om.c        | 498 -------------------------------
+ dlls/ntdll/tests/om.c        | 494 -------------------------------
  dlls/ntdll/tests/sync.c      | 547 +++++++++++++++++++++++++++++++++++
- 3 files changed, 548 insertions(+), 498 deletions(-)
+ 3 files changed, 548 insertions(+), 494 deletions(-)
  create mode 100644 dlls/ntdll/tests/sync.c
 
 diff --git a/dlls/ntdll/tests/Makefile.in b/dlls/ntdll/tests/Makefile.in
@@ -23,10 +23,10 @@ index ed15c51339f..9a99c01bd7c 100644
  	time.c \
  	virtual.c
 diff --git a/dlls/ntdll/tests/om.c b/dlls/ntdll/tests/om.c
-index 266ec0d63eb..201fb92cc97 100644
+index 1878a480cb8..77370fb5c4a 100644
 --- a/dlls/ntdll/tests/om.c
 +++ b/dlls/ntdll/tests/om.c
-@@ -28,10 +28,6 @@
+@@ -30,10 +30,6 @@
  static VOID     (WINAPI *pRtlInitUnicodeString)( PUNICODE_STRING, LPCWSTR );
  static NTSTATUS (WINAPI *pNtCreateEvent) ( PHANDLE, ACCESS_MASK, const POBJECT_ATTRIBUTES, EVENT_TYPE, BOOLEAN);
  static NTSTATUS (WINAPI *pNtOpenEvent)   ( PHANDLE, ACCESS_MASK, const POBJECT_ATTRIBUTES);
@@ -37,7 +37,7 @@ index 266ec0d63eb..201fb92cc97 100644
  static NTSTATUS (WINAPI *pNtCreateJobObject)( PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES );
  static NTSTATUS (WINAPI *pNtOpenJobObject)( PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES );
  static NTSTATUS (WINAPI *pNtCreateKey)( PHANDLE, ACCESS_MASK, POBJECT_ATTRIBUTES, ULONG,
-@@ -42,8 +38,6 @@ static NTSTATUS (WINAPI *pNtCreateMailslotFile)( PHANDLE, ACCESS_MASK, POBJECT_A
+@@ -44,8 +40,6 @@ static NTSTATUS (WINAPI *pNtCreateMailslotFile)( PHANDLE, ACCESS_MASK, POBJECT_A
                                                   ULONG, ULONG, ULONG, PLARGE_INTEGER );
  static NTSTATUS (WINAPI *pNtCreateMutant)( PHANDLE, ACCESS_MASK, const POBJECT_ATTRIBUTES, BOOLEAN );
  static NTSTATUS (WINAPI *pNtOpenMutant)  ( PHANDLE, ACCESS_MASK, const POBJECT_ATTRIBUTES );
@@ -46,7 +46,7 @@ index 266ec0d63eb..201fb92cc97 100644
  static NTSTATUS (WINAPI *pNtCreateSemaphore)( PHANDLE, ACCESS_MASK,const POBJECT_ATTRIBUTES,LONG,LONG );
  static NTSTATUS (WINAPI *pNtOpenSemaphore)( PHANDLE, ACCESS_MASK, const POBJECT_ATTRIBUTES );
  static NTSTATUS (WINAPI *pNtQuerySemaphore)( PHANDLE, SEMAPHORE_INFORMATION_CLASS, PVOID, ULONG, PULONG );
-@@ -65,23 +59,13 @@ static NTSTATUS (WINAPI *pNtQueryObject)(HANDLE,OBJECT_INFORMATION_CLASS,PVOID,U
+@@ -67,15 +61,9 @@ static NTSTATUS (WINAPI *pNtQueryObject)(HANDLE,OBJECT_INFORMATION_CLASS,PVOID,U
  static NTSTATUS (WINAPI *pNtReleaseSemaphore)(HANDLE, ULONG, PULONG);
  static NTSTATUS (WINAPI *pNtCreateKeyedEvent)( HANDLE *, ACCESS_MASK, const OBJECT_ATTRIBUTES *, ULONG );
  static NTSTATUS (WINAPI *pNtOpenKeyedEvent)( HANDLE *, ACCESS_MASK, const OBJECT_ATTRIBUTES * );
@@ -61,16 +61,8 @@ index 266ec0d63eb..201fb92cc97 100644
 -static void     (WINAPI *pRtlWakeAddressSingle)( const void * );
  static NTSTATUS (WINAPI *pNtOpenProcess)( HANDLE *, ACCESS_MASK, const OBJECT_ATTRIBUTES *, const CLIENT_ID * );
  static NTSTATUS (WINAPI *pNtCreateDebugObject)( HANDLE *, ACCESS_MASK, OBJECT_ATTRIBUTES *, ULONG );
- static NTSTATUS (WINAPI *pNtQuerySystemInformation)(SYSTEM_INFORMATION_CLASS, PVOID, ULONG, PULONG);
  
--#define KEYEDEVENT_WAIT       0x0001
--#define KEYEDEVENT_WAKE       0x0002
--#define KEYEDEVENT_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED | 0x0003)
--
- #define ROUND_UP(value, alignment) (((value) + ((alignment) - 1)) & ~((alignment)-1))
- 
- static LPCSTR wine_dbgstr_us( const UNICODE_STRING *us )
-@@ -1710,286 +1694,6 @@ static void test_type_mismatch(void)
+@@ -1705,286 +1693,6 @@ static void test_type_mismatch(void)
      pNtClose( h );
  }
  
@@ -357,7 +349,7 @@ index 266ec0d63eb..201fb92cc97 100644
  static void test_null_device(void)
  {
      OBJECT_ATTRIBUTES attr;
-@@ -2063,119 +1767,6 @@ static void test_null_device(void)
+@@ -2058,119 +1766,6 @@ static void test_null_device(void)
      CloseHandle(ov.hEvent);
  }
  
@@ -477,7 +469,7 @@ index 266ec0d63eb..201fb92cc97 100644
  static void test_semaphore(void)
  {
      SEMAPHORE_BASIC_INFORMATION info;
-@@ -2252,79 +1843,6 @@ static void test_semaphore(void)
+@@ -2247,79 +1842,6 @@ static void test_semaphore(void)
      NtClose( semaphore );
  }
  
@@ -557,7 +549,7 @@ index 266ec0d63eb..201fb92cc97 100644
  static void test_process(void)
  {
      OBJECT_ATTRIBUTES attr;
-@@ -2388,13 +1906,7 @@ START_TEST(om)
+@@ -2562,13 +2084,7 @@ START_TEST(om)
      pNtCreateMailslotFile   = (void *)GetProcAddress(hntdll, "NtCreateMailslotFile");
      pNtCreateMutant         = (void *)GetProcAddress(hntdll, "NtCreateMutant");
      pNtOpenEvent            = (void *)GetProcAddress(hntdll, "NtOpenEvent");
@@ -571,7 +563,7 @@ index 266ec0d63eb..201fb92cc97 100644
      pNtOpenFile             = (void *)GetProcAddress(hntdll, "NtOpenFile");
      pNtClose                = (void *)GetProcAddress(hntdll, "NtClose");
      pRtlInitUnicodeString   = (void *)GetProcAddress(hntdll, "RtlInitUnicodeString");
-@@ -2415,15 +1927,9 @@ START_TEST(om)
+@@ -2589,15 +2105,9 @@ START_TEST(om)
      pNtReleaseSemaphore     =  (void *)GetProcAddress(hntdll, "NtReleaseSemaphore");
      pNtCreateKeyedEvent     =  (void *)GetProcAddress(hntdll, "NtCreateKeyedEvent");
      pNtOpenKeyedEvent       =  (void *)GetProcAddress(hntdll, "NtOpenKeyedEvent");
@@ -586,10 +578,10 @@ index 266ec0d63eb..201fb92cc97 100644
 -    pRtlWakeAddressSingle   =  (void *)GetProcAddress(hntdll, "RtlWakeAddressSingle");
      pNtOpenProcess          =  (void *)GetProcAddress(hntdll, "NtOpenProcess");
      pNtCreateDebugObject    =  (void *)GetProcAddress(hntdll, "NtCreateDebugObject");
-     pNtQuerySystemInformation = (void *)GetProcAddress(hntdll, "NtQuerySystemInformation");
-@@ -2437,11 +1943,7 @@ START_TEST(om)
+ 
+@@ -2609,12 +2119,8 @@ START_TEST(om)
+     test_symboliclink();
      test_query_object();
-     test_query_object_types();
      test_type_mismatch();
 -    test_event();
 -    test_mutant();
@@ -598,6 +590,7 @@ index 266ec0d63eb..201fb92cc97 100644
      test_null_device();
 -    test_wait_on_address();
      test_process();
+     test_object_types();
  }
 diff --git a/dlls/ntdll/tests/sync.c b/dlls/ntdll/tests/sync.c
 new file mode 100644
@@ -1153,5 +1146,5 @@ index 00000000000..3f41cdfeedd
 +    test_keyed_events();
 +}
 -- 
-2.29.2
+2.20.1
 

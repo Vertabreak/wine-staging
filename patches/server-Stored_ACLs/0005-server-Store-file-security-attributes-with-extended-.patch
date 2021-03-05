@@ -1,4 +1,4 @@
-From c7290ab262bd880a7cae7401ff19e6692e047412 Mon Sep 17 00:00:00 2001
+From a586ff9412c92a1497e78eefdb7d90fc5e2a8c04 Mon Sep 17 00:00:00 2001
 From: "Erich E. Hoover" <erich.e.hoover@gmail.com>
 Date: Mon, 30 Mar 2015 13:04:23 +0200
 Subject: [PATCH] server: Store file security attributes with extended file
@@ -9,7 +9,7 @@ Subject: [PATCH] server: Store file security attributes with extended file
  1 file changed, 78 insertions(+)
 
 diff --git a/server/file.c b/server/file.c
-index 64e59307aab..39c64180b6e 100644
+index 32f64282c96..4e601b18251 100644
 --- a/server/file.c
 +++ b/server/file.c
 @@ -32,6 +32,7 @@
@@ -36,9 +36,9 @@ index 64e59307aab..39c64180b6e 100644
  
  #include "ntstatus.h"
  #define WIN32_NO_STATUS
-@@ -52,6 +62,21 @@
- #include "process.h"
- #include "security.h"
+@@ -66,6 +76,21 @@ struct type_descr file_type =
+     },
+ };
  
 +#ifndef XATTR_USER_PREFIX
 +#define XATTR_USER_PREFIX "user."
@@ -58,7 +58,7 @@ index 64e59307aab..39c64180b6e 100644
  struct file
  {
      struct object       obj;            /* object header */
-@@ -205,6 +230,56 @@ int is_file_executable( const char *name )
+@@ -216,6 +241,56 @@ int is_file_executable( const char *name )
      return len >= 4 && (!strcasecmp( name + len - 4, ".exe") || !strcasecmp( name + len - 4, ".com" ));
  }
  
@@ -113,9 +113,9 @@ index 64e59307aab..39c64180b6e 100644
 +}
 +
  static struct object *create_file( struct fd *root, const char *nameptr, data_size_t len,
+                                    struct unicode_str nt_name,
                                     unsigned int access, unsigned int sharing, int create,
-                                    unsigned int options, unsigned int attrs,
-@@ -625,6 +700,9 @@ int set_file_sd( struct object *obj, struct fd *fd, mode_t *mode, uid_t *uid,
+@@ -614,6 +689,9 @@ int set_file_sd( struct object *obj, struct fd *fd, mode_t *mode, uid_t *uid,
              *mode = (*mode & S_IFMT) | new_mode;
          }
  
@@ -126,5 +126,5 @@ index 64e59307aab..39c64180b6e 100644
          obj->sd = new_sd;
          return 1;
 -- 
-2.29.2
+2.20.1
 
